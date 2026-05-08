@@ -34,7 +34,7 @@
         .modal-content{background:#fff;padding:25px;border-radius:8px;width:750px;max-height:80vh;}
         .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
         .modal-header h3{color:#165DFF;}
-        .close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#999;}
+        .close-btn{background:none;border:none;font-size:20px;cursor-pointer;color:#999;}
         .modal-body input,.modal-body select{padding:7px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:260px;}
         .modal-body textarea{padding:10px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:98%;resize:vertical;min-height:100px;}
         .modal-footer{margin-top:15px;text-align:right;}
@@ -191,12 +191,10 @@
 </div>
 
 <script>
-// 云端数据库地址（已重置，避免旧数据污染）
 const SYNC_URL = "https://jsonstorage.net/api/items/em-crm-2026-repair";
 let userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
 let cusData = [];
 
-// 修复：云端拉取失败时，强制重置 userList，避免旧数据污染
 async function loadFromCloud() {
     try {
         let res = await fetch(SYNC_URL);
@@ -205,7 +203,6 @@ async function loadFromCloud() {
         if (data.userList) userList = data.userList;
         if (data.cusData) cusData = data.cusData;
     } catch (e) {
-        // 云端数据异常时，使用全新初始化数据
         userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
         cusData = [];
         await saveToCloud();
@@ -257,10 +254,10 @@ function renderNormalCustomers() {
     if (selVal !== "all") list = list.filter(x => x.sellerAcc === selVal);
     if (key) {
         list = list.filter(x =>
-            (x.cusCode || "").includes(key) ||
-            x.name.includes(key) ||
-            x.phone.includes(key) ||
-            (x.product || "").includes(key)
+            (item.cusCode || "").includes(key) ||
+            item.name.includes(key) ||
+            item.phone.includes(key) ||
+            (item.product || "").includes(key)
         );
     }
     let html = "";
@@ -385,13 +382,11 @@ function openAddSellerModal() {
 }
 function closeAddSellerModal() { document.getElementById("addSellerModal").classList.add("hide"); }
 
-// 修复：账号存在判断逻辑
 async function saveNewSeller() {
     let acc = document.getElementById("newSellerAcc").value.trim();
     let name = document.getElementById("newSellerName").value.trim();
     let pwd = document.getElementById("newSellerPwd").value.trim() || "123456";
     if (!acc || !name) { alert("账号和姓名不能为空"); return; }
-    // 关键修复：重新拉取云端数据，避免本地缓存污染
     await loadFromCloud();
     if (userList[acc]) { alert("账号已存在"); return; }
     userList[acc] = { pwd, name, role: "seller", deleted: false };
@@ -399,7 +394,6 @@ async function saveNewSeller() {
     alert("添加成功");
     closeAddSellerModal();
     renderSellerSelect();
-    renderAllTable();
 }
 
 function openSellerModal() {
