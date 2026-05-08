@@ -2,332 +2,46 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>客户管理系统</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:"微软雅黑";}
-        body{background:#f0f3f8;}
-        .hide{display:none !important;}
-        .login-card{width:400px;background:#fff;padding:40px;border-radius:10px;box-shadow:0 5px 25px #0000001a;margin:100px auto;}
-        .title{text-align:center;font-size:26px;color:#165DFF;font-weight:bold;margin-bottom:30px;}
-        .inp{width:100%;height:46px;padding:0 15px;margin-bottom:18px;border:1px solid #dde0e6;border-radius:6px;font-size:15px;}
-        .login-btn{width:100%;height:46px;background:#165DFF;color:#fff;border:none;border-radius:6px;font-size:16px;cursor:pointer;}
-        .head{height:65px;background:#165DFF;display:flex;justify-content:space-between;align-items:center;padding:0 30px;color:#fff;}
-        .sys-name{font-size:22px;font-weight:bold;}
-        .user-box{font-size:16px;display:flex;align-items:center;gap:8px;}
-        .edit-name{background:#fff;color:#165DFF;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
-        .search-bar{padding:18px 30px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-        #searchKey{width:320px;height:36px;padding:0 12px;border:1px solid #ddd;border-radius:4px;font-size:14px;}
-        .btn-blue{background:#165DFF;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
-        .btn-gray{background:#999;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
-        .btn-add{background:#28a745;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
-        .table-container{width:94%;margin:0 3%;border:1px solid #eee;border-radius:8px;overflow:hidden;margin-bottom:15px;}
-        .table-scroll{max-height:280px;overflow-y:auto;}
-        table{width:100%;border-collapse:collapse;}
-        th,td{border:1px solid #eee;padding:11px;text-align:center;font-size:14px;}
-        th{background:#f7f8fa;position:sticky;top:0;}
-        .sub-title{font-size:17px;font-weight:bold;padding:15px 30px;margin-top:10px;}
-        .warn-tit{color:#f53f3f;}
-        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:999;}
-        .modal-content{background:#fff;padding:25px;border-radius:8px;width:750px;max-height:80vh;}
-        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
-        .modal-header h3{color:#165DFF;}
-        .close-btn{background:none;border:none;font-size:20px;cursor-pointer;color:#999;}
-        .modal-body input,.modal-body select{padding:7px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:260px;}
-        .modal-body textarea{padding:10px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:98%;resize:vertical;min-height:100px;}
-        .modal-footer{margin-top:15px;text-align:right;}
-        .modal-footer button{padding:8px 22px;background:#165DFF;color:#fff;border:none;border-radius:4px;cursor:pointer;}
-        .del-btn{background:#dc3545;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
-        .edit-btn{background:#165DFF;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;margin-right:4px;}
-        #pwdModal .modal-content{width:380px;}
-        #pwdModal input{width:100%;margin:8px 0;}
-    </style>
+    <title>管理员后台</title>
+    <style>*{margin:0;padding:0;box-sizing:border-box;font-family:微软雅黑}body{background:#f0f3f8}.hide{display:none}.login{width:400px;margin:100px auto;background:white;padding:40px;border-radius:12px;box-shadow:0 4px 20px #00000010}h2{text-align:center;margin-bottom:30px;color:#165DFF}.input{width:100%;height:44px;margin-bottom:15px;padding:0 15px;border:1px solid #ddd;border-radius:6px}.btn{width:100%;height:46px;background:#165DFF;color:white;border:none;border-radius:6px;font-size:16px}.top{background:#165DFF;color:white;padding:15px 30px;display:flex;justify-content:space-between;align-items:center}.top button{margin-left:10px;padding:6px 12px;border:none;border-radius:4px}.list{padding:20px}.table{width:100%;background:white;border-radius:8px;overflow:hidden}.table th,.table td{padding:12px;text-align:center;border-bottom:1px solid #eee}.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#00000080;display:flex;align-items:center;justify-content:center}.modal .box{background:white;padding:30px;width:400px;border-radius:10px}.modal input{width:100%;height:40px;margin-bottom:10px;padding:0 10px}</style>
 </head>
 <body>
-
-<div id="loginPage">
-    <div class="login-card">
-        <div class="title">客户管理系统</div>
-        <input class="inp" type="text" id="acc" placeholder="请输入账号">
-        <input class="inp" type="password" id="pwd" placeholder="请输入密码">
-        <button class="login-btn" onclick="login()">登录系统</button>
-    </div>
+<div class="login" id="login">
+    <h2>管理员登录</h2>
+    <input class="input" id="user" placeholder="账号" value="admin">
+    <input class="input" id="pwd" placeholder="密码" type="password" value="123456">
+    <button class="btn" onclick="login()">登录</button>
 </div>
-
-<div id="mainPage" class="hide">
-    <div class="head">
-        <div class="sys-name">客户管理系统</div>
-        <div class="user-box">
-            当前登录：<span id="nowName"></span>
-            <button class="edit-name" onclick="openPwdModal()">修改密码</button>
-            <button class="edit-name" onclick="logout()">退出</button>
+<div class="hide" id="main">
+    <div class="top">
+        <div>管理员后台</div>
+        <div>
+            <button onclick="addUser()">添加业务员</button>
+            <button onclick="logout()">退出</button>
         </div>
     </div>
-
-    <div class="search-bar">
-        <input type="text" id="searchKey" placeholder="搜索：编号/姓名/电话/产品/备注/资质">
-        <button class="btn-blue" onclick="doSearch()">搜索</button>
-        <button class="btn-gray" onclick="resetSearch()">重置</button>
-        <button class="btn-add" onclick="openAddModal()">+ 新增客户</button>
-    </div>
-
-    <div class="sub-title">我的客户列表</div>
-    <div class="table-container">
-        <div class="table-scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>客户编号</th>
-                        <th>姓名</th>
-                        <th>电话</th>
-                        <th>产品</th>
-                        <th>状态</th>
-                        <th>复审日期</th>
-                        <th>添加时间</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody id="cusTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="sub-title warn-tit">⚠️ 复审临期（48小时内）</div>
-    <div class="table-container">
-        <div class="table-scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>编号</th><th>姓名</th><th>电话</th><th>复审日期</th><th>添加时间</th><th>操作</th>
-                    </tr>
-                </thead>
-                <tbody id="warnTable"></tbody>
+    <div class="list">
+        <div class="table">
+            <table width="100%">
+                <tr><th>账号</th><th>姓名</th><th>状态</th><th>操作</th></tr>
+                <tbody id="userList"></tbody>
             </table>
         </div>
     </div>
 </div>
-
-<div id="addModal" class="modal hide">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="modalTitle">新增客户</h3>
-            <button class="close-btn" onclick="closeAddModal()">×</button>
-        </div>
-        <div class="modal-body">
-            <input type="hidden" id="editIndex">
-            客户编号：<input type="text" id="cusCode"><br>
-            客户姓名：<input type="text" id="cName"><br>
-            联系电话：<input type="text" id="cPhone"><br>
-            产品名称：<input type="text" id="cProduct"><br>
-            客户状态：<select id="cStatus"><option>意向</option><option>下款</option></select><br>
-            复审日期：<input type="date" id="cReview"><br>
-            客户资质：<textarea id="cQual"></textarea><br>
-            备注信息：<input type="text" id="cNote"><br>
-        </div>
-        <div class="modal-footer">
-            <button onclick="saveCustomer()">保存</button>
-        </div>
-    </div>
-</div>
-
-<div id="pwdModal" class="modal hide">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>修改密码</h3>
-            <button class="close-btn" onclick="closePwdModal()">×</button>
-        </div>
-        <div class="modal-body">
-            <input type="password" id="oldPwd" placeholder="原密码"><br>
-            <input type="password" id="newPwd" placeholder="新密码"><br>
-            <input type="password" id="confirmPwd" placeholder="确认新密码"><br>
-        </div>
-        <div class="modal-footer">
-            <button onclick="saveSellerPwd()">保存</button>
-        </div>
-    </div>
-</div>
-
+<div class="hide" id="modal"><div class="box"><input id="acc" placeholder="账号"><input id="name" placeholder="姓名"><button onclick="saveUser()">保存</button></div></div>
 <script>
-const SYNC_URL = "https://jsonstorage.net/api/items/em-crm-2026-repair";
-let userList = {};
-let cusData = [];
-let loginAccount = "";
-let loginUserName = "";
-
-async function loadFromCloud() {
-    try {
-        let res = await fetch(SYNC_URL);
-        if (!res.ok) throw new Error("云端数据不存在");
-        let data = await res.json();
-        if (data.userList) userList = data.userList;
-        if (data.cusData) cusData = data.cusData;
-    } catch (e) {
-        userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
-        cusData = [];
-    }
-}
-
-async function saveToCloud() {
-    await fetch(SYNC_URL, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userList, cusData })
-    });
-}
-
-loadFromCloud();
-
-function login() {
-    let acc = document.getElementById("acc").value.trim();
-    let pwd = document.getElementById("pwd").value.trim();
-    if (!acc || !pwd) { alert("请输入账号密码"); return; }
-    if (!userList[acc]) { alert("账号不存在"); return; }
-    if (userList[acc].deleted) { alert("账号已禁用"); return; }
-    if (userList[acc].pwd !== pwd) { alert("密码错误"); return; }
-
-    loginAccount = acc;
-    loginUserName = userList[acc].name;
-    document.getElementById("loginPage").classList.add("hide");
-    document.getElementById("mainPage").classList.remove("hide");
-    document.getElementById("nowName").innerText = loginUserName;
-    refreshList();
-}
-
-function formatTime(d) {
-    const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, 0), da = String(d.getDate()).padStart(2, 0);
-    const h = String(d.getHours()).padStart(2, 0), mi = String(d.getMinutes()).padStart(2, 0);
-    return `${y}-${m}-${da} ${h}:${mi}`;
-}
-
-function refreshList(keyword = "") {
-    let myList = cusData.filter(item => item.sellerAcc === loginAccount);
-    if (keyword) {
-        myList = myList.filter(item =>
-            (item.cusCode || "").includes(keyword) ||
-            item.name.includes(keyword) ||
-            item.phone.includes(keyword) ||
-            (item.product || "").includes(keyword)
-        );
-    }
-    let now = Date.now();
-    let rows = [], warnRows = [];
-    myList.forEach((item, i) => {
-        let rt = new Date(item.review).getTime();
-        let tr = `<tr>
-            <td>${item.cusCode || '-'}</td>
-            <td>${item.name}</td>
-            <td>${item.phone}</td>
-            <td>${item.product || '-'}</td>
-            <td>${item.status}</td>
-            <td>${item.review}</td>
-            <td>${item.addTime}</td>
-            <td>
-                <button class="edit-btn" onclick="edit(${i})">编辑</button>
-                <button class="del-btn" onclick="del(${i})">删除</button>
-            </td>
-        </tr>`;
-        rows.push(tr);
-        if (rt >= now && rt - now <= 48 * 3600 * 1000) warnRows.push(tr);
-    });
-    document.getElementById("cusTable").innerHTML = rows.length ? rows.join('') : "<tr><td colspan=8>暂无客户</td></tr>";
-    document.getElementById("warnTable").innerHTML = warnRows.length ? warnRows.join('') : "<tr><td colspan=6>暂无临期</td></tr>";
-}
-
-function edit(index) {
-    let item = cusData.filter(x => x.sellerAcc === loginAccount)[index];
-    let realIndex = cusData.indexOf(item);
-    document.getElementById("editIndex").value = realIndex;
-    document.getElementById("cusCode").value = item.cusCode || '';
-    document.getElementById("cName").value = item.name;
-    document.getElementById("cPhone").value = item.phone;
-    document.getElementById("cProduct").value = item.product || '';
-    document.getElementById("cStatus").value = item.status;
-    document.getElementById("cReview").value = item.review;
-    document.getElementById("cQual").value = item.qual || '';
-    document.getElementById("cNote").value = item.note || '';
-    document.getElementById("modalTitle").innerText = "编辑客户";
-    openAddModal();
-}
-
-async function del(index) {
-    if (!confirm("确定删除？")) return;
-    let item = cusData.filter(x => x.sellerAcc === loginAccount)[index];
-    cusData = cusData.filter(x => x !== item);
-    await saveToCloud();
-    refreshList();
-}
-
-async function saveCustomer() {
-    let code = document.getElementById("cusCode").value.trim();
-    let name = document.getElementById("cName").value.trim();
-    let phone = document.getElementById("cPhone").value.trim();
-    let product = document.getElementById("cProduct").value.trim();
-    let status = document.getElementById("cStatus").value;
-    let review = document.getElementById("cReview").value;
-    let qual = document.getElementById("cQual").value.trim();
-    let note = document.getElementById("cNote").value.trim();
-    let index = document.getElementById("editIndex").value;
-
-    if (!name || !phone || !review) { alert("姓名、电话、复审日期不能为空"); return; }
-
-    let obj = {
-        cusCode: code, name, phone, product, status, review, qual, note,
-        addTime: formatTime(new Date()),
-        sellerAcc: loginAccount,
-        sellerName: loginUserName
-    };
-
-    if (index === "") cusData.push(obj);
-    else cusData[index] = obj;
-
-    await saveToCloud();
-    alert("保存成功");
-    closeAddModal();
-    refreshList();
-}
-
-function openAddModal() { document.getElementById("addModal").classList.remove("hide"); }
-function closeAddModal() {
-    document.getElementById("addModal").classList.add("hide");
-    document.getElementById("editIndex").value = "";
-    document.getElementById("cusCode").value = "";
-    document.getElementById("cName").value = "";
-    document.getElementById("cPhone").value = "";
-    document.getElementById("cProduct").value = "";
-    document.getElementById("cQual").value = "";
-    document.getElementById("cNote").value = "";
-    document.getElementById("modalTitle").innerText = "新增客户";
-}
-
-function openPwdModal() {
-    document.getElementById("pwdModal").classList.remove("hide");
-    document.getElementById("oldPwd").value = "";
-    document.getElementById("newPwd").value = "";
-    document.getElementById("confirmPwd").value = "";
-}
-function closePwdModal() { document.getElementById("pwdModal").classList.add("hide"); }
-
-async function saveSellerPwd() {
-    let old = document.getElementById("oldPwd").value.trim();
-    let np = document.getElementById("newPwd").value.trim();
-    let cp = document.getElementById("confirmPwd").value.trim();
-    if (!old || !np || !cp) { alert("请填写完整"); return; }
-    if (old !== userList[loginAccount].pwd) { alert("原密码错误"); return; }
-    if (np !== cp) { alert("两次密码不一致"); return; }
-    userList[loginAccount].pwd = np;
-    await saveToCloud();
-    alert("修改成功，请重新登录");
-    logout();
-}
-
-function doSearch() { refreshList(document.getElementById("searchKey").value.trim()); }
-function resetSearch() { document.getElementById("searchKey").value = ""; refreshList(); }
-function logout() { location.reload(); }
-
-setInterval(async () => {
-    await loadFromCloud();
-    if (loginAccount) refreshList();
-}, 3000);
+const API = "https://jsonstorage.net/api/items/em-crm-2026-repair";
+let data = {users:{admin:{pwd:"123456",role:"admin"}},customers:[]};
+async function load(){let r=await fetch(API);if(r.ok)data=await r.json()}
+async function save(){await fetch(API,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})}
+function login(){let u=document.getElementById("user").value,p=document.getElementById("pwd").value;if(u==="admin"&&data.users.admin&&data.users.admin.pwd===p){document.getElementById("login").classList.add("hide");document.getElementById("main").classList.remove("hide");render();return}alert("账号或密码错误")}
+function render(){let b=document.getElementById("userList");b.innerHTML="";for(let i in data.users){if(i==="admin")continue;let u=data.users[i];b.innerHTML+=`<tr><td>${i}</td><td>${u.name}</td><td>${u.deleted?"禁用":"正常"}</td><td><button onclick='toggle("${i}")'>${u.deleted?"启用":"禁用"}</button></td></tr>`}}
+function addUser(){document.getElementById("modal").classList.remove("hide")}
+async function saveUser(){let a=document.getElementById("acc").value,n=document.getElementById("name").value;if(!a||!n)return;if(data.users[a]){alert("账号已存在");return}data.users[a]={pwd:"123456",name:n,deleted:false};await save();render();document.getElementById("modal").classList.add("hide")}
+async function toggle(a){data.users[a].deleted=!data.users[a].deleted;await save();render()}
+function logout(){location.reload()}
+window.onload=load
 </script>
 </body>
 </html>
