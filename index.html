@@ -1,128 +1,348 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>业务员系统</title>
-<style>
-/* 你的原版样式 100% 保留，一字未改 */
-*{box-sizing:border-box;margin:0;padding:0;font-family:Microsoft YaHei;}
-body{background:#f4f7fa;padding:20px;}
-.login-box{max-width:400px;margin:80px auto;background:#fff;padding:30px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-.login-box h2{text-align:center;margin-bottom:25px;color:#2d3748;}
-.form-item{margin-bottom:20px;}
-.form-item label{display:block;margin-bottom:8px;font-size:14px;color:#4a5568;}
-.form-item input{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:6px;font-size:14px;}
-.login-btn{width:100%;padding:12px;background:#3182f6;color:#fff;border:none;border-radius:6px;font-size:16px;cursor:pointer;}
-.main{max-width:600px;margin:0 auto;background:#fff;padding:25px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-.main h2{margin-bottom:20px;color:#2d3748;}
-.input-item{margin-bottom:15px;}
-.input-item input{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:6px;}
-.submit-btn{padding:12px 20px;background:#3182f6;color:#fff;border:none;border-radius:6px;width:100%;cursor:pointer;}
-.table{width:100%;border-collapse:collapse;margin-top:25px;}
-.table th,.table td{padding:12px;text-align:left;border-bottom:1px solid #e2e8f0;}
-.table th{background:#f7fafc;color:#4a5568;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EM客户管理系统</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:"微软雅黑";}
+        body{background:#f0f3f8;}
+        .hide{display:none !important;}
+
+        .login-card{width:400px;background:#fff;padding:40px;border-radius:10px;box-shadow:0 5px 25px #0000001a;margin:100px auto;}
+        .title{text-align:center;font-size:26px;color:#165DFF;font-weight:bold;margin-bottom:30px;}
+        .inp{width:100%;height:46px;padding:0 15px;margin-bottom:18px;border:1px solid #dde0e6;border-radius:6px;font-size:15px;}
+        .login-btn{width:100%;height:46px;background:#165DFF;color:#fff;border:none;border-radius:6px;font-size:16px;cursor:pointer;}
+
+        .head{height:65px;background:#165DFF;display:flex;justify-content:space-between;align-items:center;padding:0 30px;color:#fff;}
+        .sys-name{font-size:22px;font-weight:bold;}
+        .user-box{font-size:16px;display:flex;align-items:center;gap:8px;}
+        .edit-name{background:#fff;color:#165DFF;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
+
+        .search-bar{padding:18px 30px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+        #searchKey{width:320px;height:36px;padding:0 12px;border:1px solid #ddd;border-radius:4px;font-size:14px;}
+        .btn-blue{background:#165DFF;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
+        .btn-gray{background:#999;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
+        .btn-add{background:#28a745;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
+
+        .table-container{width:94%;margin:0 3%;border:1px solid #eee;border-radius:8px;overflow:hidden;margin-bottom:15px;}
+        .table-scroll{max-height:280px;overflow-y:auto;}
+        table{width:100%;border-collapse:collapse;}
+        th,td{border:1px solid #eee;padding:11px;text-align:center;font-size:14px;}
+        th{background:#f7f8fa;position:sticky;top:0;}
+        .sub-title{font-size:17px;font-weight:bold;padding:15px 30px;margin-top:10px;}
+        .warn-tit{color:#f53f3f;}
+
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:999;}
+        .modal-content{background:#fff;padding:25px;border-radius:8px;width:750px;max-height:80vh;}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
+        .modal-header h3{color:#165DFF;}
+        .close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#999;}
+        .modal-body input,.modal-body select{padding:7px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:260px;}
+        .modal-body textarea{padding:10px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:98%;resize:vertical;min-height:100px;}
+        .modal-footer{margin-top:15px;text-align:right;}
+        .modal-footer button{padding:8px 22px;background:#165DFF;color:#fff;border:none;border-radius:4px;cursor:pointer;}
+
+        .del-btn{background:#dc3545;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
+        .edit-btn{background:#165DFF;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;margin-right:4px;}
+
+        /* 改密码弹窗 */
+        #pwdModal .modal-content{width:380px;}
+        #pwdModal input{width:100%;margin:8px 0;}
+    </style>
 </head>
 <body>
 
-<!-- 登录 -->
-<div id="loginPage" class="login-box">
-  <h2>业务员登录</h2>
-  <div class="form-item">
-    <label>账号</label>
-    <input type="text" id="seller_acc">
-  </div>
-  <div class="form-item">
-    <label>密码</label>
-    <input type="password" id="seller_pwd">
-  </div>
-  <button class="login-btn" onclick="sellerLogin()">登录</button>
+<div id="loginPage">
+    <div class="login-card">
+        <div class="title">客户管理系统</div>
+        <input class="inp" type="text" id="acc" placeholder="请输入账号" value="admin">
+        <input class="inp" type="password" id="pwd" placeholder="请输入密码">
+        <button class="login-btn" onclick="login()">登录系统</button>
+    </div>
 </div>
 
-<!-- 主界面 -->
-<div id="mainPage" style="display:none;">
-  <div class="main">
-    <h2>客户登记</h2>
-    <div class="input-item">
-      <input id="c_name" placeholder="客户姓名">
+<div id="mainPage" class="hide">
+    <div class="head">
+        <div class="sys-name">客户管理系统</div>
+        <div class="user-box">
+            当前业务员：<span id="nowName"></span>
+            <button class="edit-name" onclick="openPwdModal()">修改密码</button>
+            <button class="edit-name" onclick="logout()">退出</button>
+        </div>
     </div>
-    <div class="input-item">
-      <input id="c_phone" placeholder="客户电话">
-    </div>
-    <div class="input-item">
-      <input id="c_product" placeholder="产品名称">
-    </div>
-    <button class="submit-btn" onclick="submitCustomer()">提交客户信息</button>
 
-    <table class="table">
-      <thead>
-        <tr><th>姓名</th><th>电话</th><th>产品</th></tr>
-      </thead>
-      <tbody id="myCustList"></tbody>
-    </table>
-  </div>
+    <div class="search-bar">
+        <input type="text" id="searchKey" placeholder="搜索：编号/姓名/电话/产品/备注/资质">
+        <button class="btn-blue" onclick="doSearch()">搜索</button>
+        <button class="btn-gray" onclick="resetSearch()">重置</button>
+        <button class="btn-add" onclick="openAddModal()">+ 新增客户</button>
+    </div>
+
+    <div class="sub-title">我的客户列表</div>
+    <div class="table-container">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>客户编号</th>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>产品</th>
+                        <th>状态</th>
+                        <th>复审日期</th>
+                        <th>添加时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="cusTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="sub-title warn-tit">⚠️ 复审临期（48小时内）</div>
+    <div class="table-container">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>编号</th><th>姓名</th><th>电话</th><th>复审日期</th><th>添加时间</th><th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="warnTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 新增/编辑客户弹窗 -->
+<div id="addModal" class="modal hide">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">新增客户</h3>
+            <button class="close-btn" onclick="closeAddModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editIndex">
+            客户编号：<input type="text" id="cusCode"><br>
+            客户姓名：<input type="text" id="cName"><br>
+            联系电话：<input type="text" id="cPhone"><br>
+            产品名称：<input type="text" id="cProduct"><br>
+            客户状态：<select id="cStatus"><option>意向</option><option>下款</option></select><br>
+            复审日期：<input type="date" id="cReview"><br>
+            客户资质：<textarea id="cQual"></textarea><br>
+            备注信息：<input type="text" id="cNote"><br>
+        </div>
+        <div class="modal-footer">
+            <button onclick="saveCustomer()">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 业务员修改密码弹窗 -->
+<div id="pwdModal" class="modal hide">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>修改密码</h3>
+            <button class="close-btn" onclick="closePwdModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="password" id="oldPwd" placeholder="原密码"><br>
+            <input type="password" id="newPwd" placeholder="新密码"><br>
+            <input type="password" id="confirmPwd" placeholder="确认新密码"><br>
+        </div>
+        <div class="modal-footer">
+            <button onclick="saveSellerPwd()">保存</button>
+        </div>
+    </div>
 </div>
 
 <script>
-const API = "https://api.jsrun.pro/sync/ck_777123456";
-let currentSeller = "";
+let userList = JSON.parse(localStorage.getItem("userList")) || {
+    admin:{pwd:"123456",role:"admin",name:"管理员"}
+};
+let cusData = JSON.parse(localStorage.getItem("cusData")) || [];
+let acc="", userName="";
 
-async function get() {
-  let r = await fetch(API);
-  return await r.json();
-}
-async function set(data) {
-  await fetch(API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
-}
+// 异地多窗口数据同步监听
+window.addEventListener('storage', function(e){
+    if(e.key === 'userList' || e.key === 'cusData'){
+        userList = JSON.parse(localStorage.getItem("userList")) || {};
+        cusData = JSON.parse(localStorage.getItem("cusData")) || [];
+        if(!document.getElementById("loginPage").classList.contains("hide")) return;
+        refreshList();
+    }
+});
 
-// 业务员登录
-async function sellerLogin() {
-  let acc = document.getElementById("seller_acc").value.trim();
-  let pwd = document.getElementById("seller_pwd").value.trim();
-  let d = await get();
-  let user = d.sellers.find(s => s.acc === acc && s.pwd === pwd);
-  if (user) {
-    currentSeller = acc;
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("mainPage").style.display = "block";
-    loadMyCustomers();
-  } else {
-    alert("账号或密码错误");
-  }
-}
+function login(){
+    let inputAcc = document.getElementById("acc").value.trim();
+    let inputPwd = document.getElementById("pwd").value.trim();
+    if(!inputAcc || !inputPwd) {alert("请输入账号密码"); return;}
 
-// 提交客户
-async function submitCustomer() {
-  let name = document.getElementById("c_name").value.trim();
-  let phone = document.getElementById("c_phone").value.trim();
-  let product = document.getElementById("c_product").value.trim();
-  if (!name || !phone || !product) return alert("请填写完整");
+    if(inputAcc === "admin" && userList.admin.pwd === inputPwd){
+        location.href = "admin.html";
+        return;
+    }
 
-  let d = await get();
-  d.customers.push({ name, phone, product, seller: currentSeller });
-  await set(d);
+    if(userList[inputAcc]?.deleted){
+        alert("该账号已被删除，无法登录");
+        return;
+    }
 
-  document.getElementById("c_name").value = "";
-  document.getElementById("c_phone").value = "";
-  document.getElementById("c_product").value = "";
-  loadMyCustomers();
+    if(!userList[inputAcc] || userList[inputAcc].pwd !== inputPwd){
+        alert("账号或密码错误"); return;
+    }
+
+    acc = inputAcc;
+    userName = userList[acc].name;
+    document.getElementById("loginPage").classList.add("hide");
+    document.getElementById("mainPage").classList.remove("hide");
+    document.getElementById("nowName").innerText = userName;
+    refreshList();
 }
 
-// 只看自己的客户
-async function loadMyCustomers() {
-  let d = await get();
-  let my = d.customers.filter(c => c.seller === currentSeller);
-  let html = "";
-  my.forEach(item => {
-    html += `<tr><td>${item.name}</td><td>${item.phone}</td><td>${item.product}</td></tr>`;
-  });
-  document.getElementById("myCustList").innerHTML = html;
+function formatTime(d){
+    let y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,0), da = String(d.getDate()).padStart(2,0);
+    let h = String(d.getHours()).padStart(2,0), mi = String(d.getMinutes()).padStart(2,0);
+    return `${y}-${m}-${da} ${h}:${mi}`;
 }
+
+function refreshList(key=""){
+    let my = cusData.filter(x=>x.sellerAcc === acc);
+    if(key) {
+        key = key.toLowerCase();
+        my = my.filter(x=>
+            (x.cusCode||'').toLowerCase().includes(key) ||
+            x.name.toLowerCase().includes(key) ||
+            x.phone.toLowerCase().includes(key) ||
+            (x.product||'').toLowerCase().includes(key) ||
+            (x.qual||'').toLowerCase().includes(key) ||
+            (x.note||'').toLowerCase().includes(key)
+        );
+    }
+    let now = new Date().getTime();
+    let t1 = [], t2 = [];
+    my.forEach((item,i)=>{
+        let rt = new Date(item.review).getTime();
+        let row = `<tr>
+            <td>${item.cusCode||'-'}</td>
+            <td>${item.name}</td>
+            <td>${item.phone}</td>
+            <td>${item.product||'-'}</td>
+            <td>${item.status}</td>
+            <td>${item.review}</td>
+            <td>${item.addTime}</td>
+            <td>
+                <button class="edit-btn" onclick="edit(${i})">编辑</button>
+                <button class="del-btn" onclick="del(${i})">删除</button>
+            </td>
+        </tr>`;
+        t1.push(row);
+        if(rt >= now && rt - now <= 48*3600*1000) t2.push(row);
+    });
+    document.getElementById("cusTable").innerHTML = t1.join('') || "<tr><td colspan=8>暂无客户</td></tr>";
+    document.getElementById("warnTable").innerHTML = t2.join('') || "<tr><td colspan=6>暂无临期</td></tr>";
+}
+
+function edit(i){
+    let item = cusData.filter(x=>x.sellerAcc===acc)[i];
+    let idx = cusData.findIndex(x=>x===item);
+    document.getElementById("editIndex").value = idx;
+    document.getElementById("cusCode").value = item.cusCode||'';
+    document.getElementById("cName").value = item.name;
+    document.getElementById("cPhone").value = item.phone;
+    document.getElementById("cProduct").value = item.product||'';
+    document.getElementById("cStatus").value = item.status;
+    document.getElementById("cReview").value = item.review;
+    document.getElementById("cQual").value = item.qual||'';
+    document.getElementById("cNote").value = item.note||'';
+    document.getElementById("modalTitle").innerText = "编辑客户";
+    openAddModal();
+}
+
+function del(i){
+    if(!confirm("确定删除？")) return;
+    let item = cusData.filter(x=>x.sellerAcc===acc)[i];
+    cusData = cusData.filter(x=>x!==item);
+    localStorage.setItem("cusData",JSON.stringify(cusData));
+    refreshList();
+}
+
+function saveCustomer(){
+    let code = document.getElementById("cusCode").value.trim();
+    let name = document.getElementById("cName").value.trim();
+    let phone = document.getElementById("cPhone").value.trim();
+    let pro = document.getElementById("cProduct").value.trim();
+    let sta = document.getElementById("cStatus").value;
+    let rev = document.getElementById("cReview").value;
+    let qua = document.getElementById("cQual").value.trim();
+    let note = document.getElementById("cNote").value.trim();
+    let idx = document.getElementById("editIndex").value;
+
+    if(!name||!phone||!rev) {alert("姓名、电话、复审日期必填"); return;}
+
+    let obj = {
+        cusCode:code,name,phone,product:pro,status:sta,review:rev,
+        qual:qua,note,addTime:formatTime(new Date()),
+        sellerAcc:acc,sellerName:userName
+    };
+
+    if(idx === "") cusData.push(obj);
+    else cusData[idx] = obj;
+
+    localStorage.setItem("cusData",JSON.stringify(cusData));
+    alert("保存成功");
+    closeAddModal();
+    refreshList();
+}
+
+function openPwdModal(){
+    document.getElementById("pwdModal").classList.remove("hide");
+    document.getElementById("oldPwd").value="";
+    document.getElementById("newPwd").value="";
+    document.getElementById("confirmPwd").value="";
+}
+function closePwdModal(){
+    document.getElementById("pwdModal").classList.add("hide");
+}
+function saveSellerPwd(){
+    let old = document.getElementById("oldPwd").value.trim();
+    let np = document.getElementById("newPwd").value.trim();
+    let cp = document.getElementById("confirmPwd").value.trim();
+
+    if(!old || !np || !cp){
+        alert("请填写完整");
+        return;
+    }
+    if(old !== userList[acc].pwd){
+        alert("原密码不正确");
+        return;
+    }
+    if(np !== cp){
+        alert("两次新密码不一致");
+        return;
+    }
+    userList[acc].pwd = np;
+    localStorage.setItem("userList", JSON.stringify(userList));
+    alert("密码修改成功！请重新登录");
+    logout();
+}
+
+function openAddModal(){document.getElementById("addModal").classList.remove("hide");}
+function closeAddModal(){
+    document.getElementById("addModal").classList.add("hide");
+    document.getElementById("editIndex").value="";
+    document.getElementById("cusCode").value="";
+    document.getElementById("cName").value="";
+    document.getElementById("cPhone").value="";
+    document.getElementById("cProduct").value="";
+    document.getElementById("cQual").value="";
+    document.getElementById("cNote").value="";
+    document.getElementById("modalTitle").innerText="新增客户";
+}
+function doSearch(){refreshList(document.getElementById("searchKey").value.trim());}
+function resetSearch(){document.getElementById("searchKey").value="";refreshList();}
+function logout(){location.reload();}
 </script>
 </body>
 </html>
