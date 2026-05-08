@@ -8,17 +8,14 @@
         *{margin:0;padding:0;box-sizing:border-box;font-family:"微软雅黑";}
         body{background:#f0f3f8;}
         .hide{display:none !important;}
-
         .login-card{width:400px;background:#fff;padding:40px;border-radius:10px;box-shadow:0 5px 25px #0000001a;margin:100px auto;}
         .title{text-align:center;font-size:26px;color:#165DFF;font-weight:bold;margin-bottom:30px;}
         .inp{width:100%;height:46px;padding:0 15px;margin-bottom:18px;border:1px solid #dde0e6;border-radius:6px;font-size:15px;}
         .login-btn{width:100%;height:46px;background:#165DFF;color:#fff;border:none;border-radius:6px;font-size:16px;cursor:pointer;}
-
         .head{height:65px;background:#165DFF;display:flex;justify-content:space-between;align-items:center;padding:0 30px;color:#fff;}
         .sys-name{font-size:22px;font-weight:bold;}
         .user-box{font-size:16px;display:flex;align-items:center;gap:8px;}
         .edit-name{background:#fff;color:#165DFF;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
-
         .search-bar{padding:18px 30px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
         #searchKey{width:320px;height:36px;padding:0 12px;border:1px solid #ddd;border-radius:4px;font-size:14px;}
         #sellerSelect{height:36px;padding:0 12px;border:1px solid #ddd;border-radius:4px;}
@@ -26,7 +23,6 @@
         .btn-gray{background:#999;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
         .btn-red{background:#dc3545;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
         .btn-green{background:#28a745;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
-
         .table-container{width:94%;margin:0 3%;border:1px solid #eee;border-radius:8px;overflow:hidden;margin-bottom:15px;}
         .table-scroll{max-height:280px;overflow-y:auto;}
         table{width:100%;border-collapse:collapse;}
@@ -34,27 +30,22 @@
         th{background:#f7f8fa;position:sticky;top:0;}
         .sub-title{font-size:17px;font-weight:bold;padding:15px 30px;margin-top:10px;}
         .warn-tit{color:#dc3545;}
-
         .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:999;}
         .modal-content{background:#fff;padding:25px;border-radius:8px;width:750px;max-height:80vh;}
         .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
         .modal-header h3{color:#165DFF;}
-        .close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#999;}
+        .close-btn{background:none;border:none;font-size:20px;cursor-pointer;color:#999;}
         .modal-body input,.modal-body select{padding:7px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:260px;}
         .modal-body textarea{padding:10px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:98%;resize:vertical;min-height:100px;}
         .modal-footer{margin-top:15px;text-align:right;}
         .modal-footer button{padding:8px 22px;background:#165DFF;color:#fff;border:none;border-radius:4px;cursor:pointer;}
-
         .del-btn{background:#dc3545;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
         .edit-btn{background:#165DFF;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;margin-right:4px;}
-
         #sellerModal .modal-content{width:600px;}
-        /* 添加业务员弹窗样式 */
         #addSellerModal .modal-content{width:400px;}
     </style>
 </head>
 <body>
-
 <div id="loginPage">
     <div class="login-card">
         <div class="title">管理员登录</div>
@@ -63,7 +54,6 @@
         <button class="login-btn" onclick="login()">登录</button>
     </div>
 </div>
-
 <div id="mainPage" class="hide">
     <div class="head">
         <div class="sys-name">管理员后台</div>
@@ -75,7 +65,6 @@
             <button class="edit-name" onclick="logout()">退出</button>
         </div>
     </div>
-
     <div class="search-bar">
         <select id="sellerSelect">
             <option value="all">全部业务员（仅正常）</option>
@@ -84,7 +73,6 @@
         <button class="btn-blue" onclick="doSearch()">搜索</button>
         <button class="btn-gray" onclick="resetSearch()">重置</button>
     </div>
-
     <div class="sub-title">全部客户列表（可编辑所有业务员客户）</div>
     <div class="table-container">
         <div class="table-scroll">
@@ -105,14 +93,13 @@
             </table>
         </div>
     </div>
-
-    <div class="sub-title warn-tit">⚠️ 已删除业务员及客户（留档，可查看编辑）</div>
+    <div class="sub-title warn-tit">⚠️ 已禁用业务员及客户（留档可查）</div>
     <div class="table-container">
         <div class="table-scroll">
             <table>
                 <thead>
                     <tr>
-                        <th>已删除业务员</th>
+                        <th>已禁用业务员</th>
                         <th>客户编号</th>
                         <th>姓名</th>
                         <th>电话</th>
@@ -127,13 +114,11 @@
         </div>
     </div>
 </div>
-
-<!-- 编辑客户弹窗 -->
 <div id="editModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
             <h3>编辑客户</h3>
-            <button class="close-btn" onclick="closeModal()">×</button>
+            <button class="close-btn" onclick="closeEditModal()">×</button>
         </div>
         <div class="modal-body">
             <input type="hidden" id="editIdx">
@@ -151,8 +136,6 @@
         </div>
     </div>
 </div>
-
-<!-- 管理员修改密码弹窗 -->
 <div id="pwdModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
@@ -169,8 +152,6 @@
         </div>
     </div>
 </div>
-
-<!-- 新增：添加业务员弹窗 -->
 <div id="addSellerModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
@@ -180,23 +161,21 @@
         <div class="modal-body">
             账号：<input type="text" id="newSellerAcc" placeholder="请输入账号"><br>
             姓名：<input type="text" id="newSellerName" placeholder="请输入姓名"><br>
-            密码：<input type="password" id="newSellerPwd" placeholder="默认123456"><br>
+            密码：<input type="password" id="newSellerPwd" placeholder="默认123456" value="123456"><br>
         </div>
         <div class="modal-footer">
             <button onclick="saveNewSeller()">确认添加</button>
         </div>
     </div>
 </div>
-
-<!-- 业务员管理弹窗 -->
 <div id="sellerModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>业务员管理（删除后仅留档，客户永久保留）</h3>
+            <h3>业务员管理（禁用后无法登录，客户保留）</h3>
             <button class="close-btn" onclick="closeSellerModal()">×</button>
         </div>
         <div class="modal-body">
-            <table width="100%">
+            <table width="100%" border="1" cellpadding="8" cellspacing="0">
                 <thead>
                     <tr>
                         <th>账号</th>
@@ -212,73 +191,75 @@
 </div>
 
 <script>
-let userList = JSON.parse(localStorage.getItem("userList")) || {
-    admin:{pwd:"123456",role:"admin"}
-};
-let cusData = JSON.parse(localStorage.getItem("cusData")) || [];
+const SYNC_URL = "https://jsonstorage.net/api/items/em-crm-2026-full";
+let userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
+let cusData = [];
 
-// 异地多窗口数据同步监听
-window.addEventListener('storage', function(e){
-    if(e.key === 'userList' || e.key === 'cusData'){
-        userList = JSON.parse(localStorage.getItem("userList")) || {};
-        cusData = JSON.parse(localStorage.getItem("cusData")) || [];
-        if(!document.getElementById("loginPage").classList.contains("hide")) return;
-        loadSellers();
-        refreshAllTables();
-    }
-});
+async function loadFromCloud() {
+    try {
+        let res = await fetch(SYNC_URL);
+        let data = await res.json();
+        if (data.userList) userList = data.userList;
+        if (data.cusData) cusData = data.cusData;
+    } catch (e) { await saveToCloud(); }
+}
 
-function login(){
-    let a = document.getElementById("acc").value;
-    let p = document.getElementById("pwd").value;
-    if(a === "admin" && userList.admin.pwd === p){
+async function saveToCloud() {
+    await fetch(SYNC_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userList, cusData })
+    });
+}
+
+loadFromCloud();
+
+function login() {
+    let a = document.getElementById("acc").value.trim();
+    let p = document.getElementById("pwd").value.trim();
+    if (a === "admin" && userList.admin.pwd === p) {
         document.getElementById("loginPage").classList.add("hide");
         document.getElementById("mainPage").classList.remove("hide");
-        loadSellers();
-        refreshAllTables();
-    }else{
+        renderSellerSelect();
+        renderAllTable();
+    } else {
         alert("账号或密码错误");
     }
 }
 
-// 加载正常业务员下拉
-function loadSellers(){
+function renderSellerSelect() {
     let sel = document.getElementById("sellerSelect");
     sel.innerHTML = '<option value="all">全部业务员（仅正常）</option>';
-    for(let acc in userList){
-        if(acc !== "admin" && !userList[acc].deleted){
-            let opt = document.createElement("option");
-            opt.value = acc;
-            opt.innerText = userList[acc].name + "(" + acc + ")";
-            sel.appendChild(opt);
+    for (let k in userList) {
+        if (k !== "admin" && !userList[k].deleted) {
+            sel.innerHTML += `<option value="${k}">${userList[k].name}(${k})</option>`;
         }
     }
 }
 
-// 刷新正常客户表 + 已删除客户留档表
-function refreshAllTables(){
-    refreshActiveTable();
-    refreshArchivedTable();
+function renderAllTable() {
+    renderNormalCustomers();
+    renderArchivedCustomers();
 }
 
-// 正常客户列表（仅正常业务员的客户）
-function refreshActiveTable(){
-    let key = document.getElementById("searchKey").value.toLowerCase();
-    let seller = document.getElementById("sellerSelect").value;
+function renderNormalCustomers() {
+    let key = document.getElementById("searchKey").value.trim();
+    let selVal = document.getElementById("sellerSelect").value;
     let list = cusData.filter(x => !userList[x.sellerAcc]?.deleted);
-
-    if(seller !== "all") list = list.filter(x => x.sellerAcc === seller);
-    if(key) list = list.filter(x =>
-        (x.cusCode||'').toLowerCase().includes(key) ||
-        (x.name||'').toLowerCase().includes(key) ||
-        (x.phone||'').toLowerCase().includes(key) ||
-        (x.product||'').toLowerCase().includes(key)
-    );
-
-    let html = [];
-    list.forEach((item, idx) => {
-        html.push(`<tr>
-            <td>${item.sellerName || item.sellerAcc}</td>
+    if (selVal !== "all") list = list.filter(x => x.sellerAcc === selVal);
+    if (key) {
+        list = list.filter(x =>
+            (x.cusCode || "").includes(key) ||
+            x.name.includes(key) ||
+            x.phone.includes(key) ||
+            (x.product || "").includes(key)
+        );
+    }
+    let html = "";
+    list.forEach(item => {
+        let idx = cusData.indexOf(item);
+        html += `<tr>
+            <td>${item.sellerName}</td>
             <td>${item.cusCode || '-'}</td>
             <td>${item.name}</td>
             <td>${item.phone}</td>
@@ -286,21 +267,21 @@ function refreshActiveTable(){
             <td>${item.status}</td>
             <td>${item.review}</td>
             <td>
-                <button class="edit-btn" onclick="editItem(${cusData.indexOf(item)})">编辑</button>
-                <button class="del-btn" onclick="delItem(${cusData.indexOf(item)})">删除客户</button>
+                <button class="edit-btn" onclick="openEdit(${idx})">编辑</button>
+                <button class="del-btn" onclick="delCus(${idx})">删除</button>
             </td>
-        </tr>`);
+        </tr>`;
     });
-    document.getElementById("cusTable").innerHTML = html.join('') || "<tr><td colspan=8>暂无客户</td></tr>";
+    document.getElementById("cusTable").innerHTML = html || "<tr><td colspan=8>暂无客户</td></tr>";
 }
 
-// 已删除业务员客户留档表
-function refreshArchivedTable(){
+function renderArchivedCustomers() {
     let list = cusData.filter(x => userList[x.sellerAcc]?.deleted);
-    let html = [];
-    list.forEach((item, idx) => {
-        html.push(`<tr>
-            <td>${item.sellerName || item.sellerAcc}（已删除）</td>
+    let html = "";
+    list.forEach(item => {
+        let idx = cusData.indexOf(item);
+        html += `<tr>
+            <td>${item.sellerName}（已禁用）</td>
             <td>${item.cusCode || '-'}</td>
             <td>${item.name}</td>
             <td>${item.phone}</td>
@@ -308,219 +289,162 @@ function refreshArchivedTable(){
             <td>${item.status}</td>
             <td>${item.review}</td>
             <td>
-                <button class="edit-btn" onclick="editItem(${cusData.indexOf(item)})">编辑</button>
-                <button class="del-btn" onclick="delItem(${cusData.indexOf(item)})">删除客户</button>
+                <button class="edit-btn" onclick="openEdit(${idx})">编辑</button>
+                <button class="del-btn" onclick="delCus(${idx})">删除</button>
             </td>
-        </tr>`);
+        </tr>`;
     });
-    document.getElementById("archivedTable").innerHTML = html.join('') || "<tr><td colspan=8>暂无已删除业务员客户</td></tr>";
+    document.getElementById("archivedTable").innerHTML = html || "<tr><td colspan=8>暂无留档客户</td></tr>";
 }
 
-function editItem(idx){
+function openEdit(idx) {
     let item = cusData[idx];
     document.getElementById("editIdx").value = idx;
     document.getElementById("cusCode").value = item.cusCode || '';
-    document.getElementById("cName").value = item.name || '';
-    document.getElementById("cPhone").value = item.phone || '';
+    document.getElementById("cName").value = item.name;
+    document.getElementById("cPhone").value = item.phone;
     document.getElementById("cProduct").value = item.product || '';
-    document.getElementById("cStatus").value = item.status || '意向';
-    document.getElementById("cReview").value = item.review || '';
+    document.getElementById("cStatus").value = item.status;
+    document.getElementById("cReview").value = item.review;
     document.getElementById("cQual").value = item.qual || '';
     document.getElementById("cNote").value = item.note || '';
     document.getElementById("editModal").classList.remove("hide");
 }
 
-function saveEdit(){
-    let idx = document.getElementById("editIdx").value;
-    cusData[idx] = {
-        ...cusData[idx],
-        cusCode: document.getElementById("cusCode").value,
-        name: document.getElementById("cName").value,
-        phone: document.getElementById("cPhone").value,
-        product: document.getElementById("cProduct").value,
-        status: document.getElementById("cStatus").value,
-        review: document.getElementById("cReview").value,
-        qual: document.getElementById("cQual").value,
-        note: document.getElementById("cNote").value
-    };
-    localStorage.setItem("cusData", JSON.stringify(cusData));
-    alert("保存成功");
-    closeModal();
-    refreshAllTables();
-}
-
-function delItem(idx){
-    if(!confirm("确定删除该客户？")) return;
-    cusData.splice(idx, 1);
-    localStorage.setItem("cusData", JSON.stringify(cusData));
-    refreshAllTables();
-}
-
-function closeModal(){
+function closeEditModal() {
     document.getElementById("editModal").classList.add("hide");
 }
-function doSearch(){refreshActiveTable();}
-function resetSearch(){
+
+async function saveEdit() {
+    let idx = document.getElementById("editIdx").value;
+    cusData[idx].cusCode = document.getElementById("cusCode").value.trim();
+    cusData[idx].name = document.getElementById("cName").value.trim();
+    cusData[idx].phone = document.getElementById("cPhone").value.trim();
+    cusData[idx].product = document.getElementById("cProduct").value.trim();
+    cusData[idx].status = document.getElementById("cStatus").value;
+    cusData[idx].review = document.getElementById("cReview").value;
+    cusData[idx].qual = document.getElementById("cQual").value.trim();
+    cusData[idx].note = document.getElementById("cNote").value.trim();
+    await saveToCloud();
+    alert("保存成功");
+    closeEditModal();
+    renderAllTable();
+}
+
+async function delCus(idx) {
+    if (!confirm("确定删除该客户？")) return;
+    cusData.splice(idx, 1);
+    await saveToCloud();
+    renderAllTable();
+}
+
+function doSearch() { renderAllTable(); }
+function resetSearch() {
     document.getElementById("searchKey").value = "";
     document.getElementById("sellerSelect").value = "all";
-    refreshAllTables();
+    renderAllTable();
 }
-function logout(){location.reload();}
 
-// 管理员改密码
-function openPwdModal(){
+function logout() { location.reload(); }
+
+function openPwdModal() {
     document.getElementById("pwdModal").classList.remove("hide");
-    document.getElementById("oldPwd").value="";
-    document.getElementById("newPwd").value="";
-    document.getElementById("confirmPwd").value="";
+    document.getElementById("oldPwd").value = "";
+    document.getElementById("newPwd").value = "";
+    document.getElementById("confirmPwd").value = "";
 }
-function closePwdModal(){
-    document.getElementById("pwdModal").classList.add("hide");
-}
-function saveAdminPwd(){
+function closePwdModal() { document.getElementById("pwdModal").classList.add("hide"); }
+
+async function saveAdminPwd() {
     let old = document.getElementById("oldPwd").value.trim();
     let np = document.getElementById("newPwd").value.trim();
     let cp = document.getElementById("confirmPwd").value.trim();
-
-    if(!old || !np || !cp){
-        alert("请填写完整");
-        return;
-    }
-    if(old !== userList.admin.pwd){
-        alert("原密码不正确");
-        return;
-    }
-    if(np !== cp){
-        alert("两次新密码不一致");
-        return;
-    }
+    if (!old || !np || !cp) { alert("请填写完整"); return; }
+    if (old !== userList.admin.pwd) { alert("原密码错误"); return; }
+    if (np !== cp) { alert("两次密码不一致"); return; }
     userList.admin.pwd = np;
-    localStorage.setItem("userList", JSON.stringify(userList));
-    alert("密码修改成功！请重新登录");
+    await saveToCloud();
+    alert("密码修改成功，请重新登录");
+    closePwdModal();
     logout();
 }
 
-// ========== 补全：添加业务员功能 ==========
-function openAddSellerModal(){
+function openAddSellerModal() {
     document.getElementById("addSellerModal").classList.remove("hide");
     document.getElementById("newSellerAcc").value = "";
     document.getElementById("newSellerName").value = "";
     document.getElementById("newSellerPwd").value = "123456";
 }
-function closeAddSellerModal(){
-    document.getElementById("addSellerModal").classList.add("hide");
-}
-function saveNewSeller(){
+function closeAddSellerModal() { document.getElementById("addSellerModal").classList.add("hide"); }
+
+async function saveNewSeller() {
     let acc = document.getElementById("newSellerAcc").value.trim();
     let name = document.getElementById("newSellerName").value.trim();
-    let pwd = document.getElementById("newSellerPwd").value.trim();
-
-    if(!acc || !name){
-        alert("账号、姓名不能为空");
-        return;
-    }
-    if(userList[acc]){
-        alert("该账号已存在！");
-        return;
-    }
-    userList[acc] = {
-        pwd: pwd || "123456",
-        name: name,
-        role: "seller",
-        deleted: false
-    };
-    localStorage.setItem("userList", JSON.stringify(userList));
-    alert("添加业务员成功！");
+    let pwd = document.getElementById("newSellerPwd").value.trim() || "123456";
+    if (!acc || !name) { alert("账号和姓名不能为空"); return; }
+    if (userList[acc]) { alert("账号已存在"); return; }
+    userList[acc] = { pwd, name, role: "seller", deleted: false };
+    await saveToCloud();
+    alert("添加成功");
     closeAddSellerModal();
-    loadSellers();
-    loadSellerTable();
+    renderSellerSelect();
 }
 
-// ========== 业务员管理（删除留档功能） ==========
-function openSellerModal(){
+function openSellerModal() {
     document.getElementById("sellerModal").classList.remove("hide");
-    loadSellerTable();
+    renderSellerTable();
 }
-function closeSellerModal(){
-    document.getElementById("sellerModal").classList.add("hide");
-}
-function loadSellerTable(){
-    let tbody = document.getElementById("sellerTable");
-    let html = [];
-    for(let acc in userList){
-        if(acc !== "admin"){
-            let status = userList[acc].deleted ? "已删除（留档）" : "正常";
-            let btn = userList[acc].deleted 
-                ? `<button class="btn-blue" onclick="restoreSeller('${acc}')">恢复</button>`
-                : `<button class="btn-red" onclick="deleteSeller('${acc}')">删除留档</button>`;
-            html.push(`<tr>
-                <td>${acc}</td>
-                <td>${userList[acc].name}</td>
-                <td>${status}</td>
-                <td>${btn}</td>
-            </tr>`);
-        }
+function closeSellerModal() { document.getElementById("sellerModal").classList.add("hide"); }
+
+async function renderSellerTable() {
+    let tb = document.getElementById("sellerTable");
+    let html = "";
+    for (let k in userList) {
+        if (k === "admin") continue;
+        let st = userList[k].deleted ? "已禁用" : "正常";
+        let btn = userList[k].deleted
+            ? `<button class="btn-blue" onclick="restoreSeller('${k}')">恢复</button>`
+            : `<button class="btn-red" onclick="deleteSeller('${k}')">禁用</button>`;
+        html += `<tr><td>${k}</td><td>${userList[k].name}</td><td>${st}</td><td>${btn}</td></tr>`;
     }
-    tbody.innerHTML = html.join('');
+    tb.innerHTML = html;
 }
 
-// 删除业务员（仅标记删除，不删除数据，客户永久保留）
-function deleteSeller(acc){
-    if(!confirm("确定删除该业务员？删除后客户数据将永久保留并进入留档区，业务员无法登录")) return;
+async function deleteSeller(acc) {
+    if (!confirm("确定禁用该业务员？禁用后无法登录，客户数据保留")) return;
     userList[acc].deleted = true;
-    localStorage.setItem("userList", JSON.stringify(userList));
-    alert("业务员已删除并留档，客户数据进入下方留档区");
-    loadSellerTable();
-    loadSellers();
-    refreshAllTables();
+    await saveToCloud();
+    renderSellerTable();
+    renderSellerSelect();
+    renderAllTable();
 }
 
-// 恢复已删除的业务员
-function restoreSeller(acc){
-    if(!confirm("确定恢复该业务员？恢复后客户数据将回到正常列表")) return;
+async function restoreSeller(acc) {
     userList[acc].deleted = false;
-    localStorage.setItem("userList", JSON.stringify(userList));
-    alert("业务员已恢复，客户数据回到正常列表");
-    loadSellerTable();
-    loadSellers();
-    refreshAllTables();
+    await saveToCloud();
+    renderSellerTable();
+    renderSellerSelect();
+    renderAllTable();
 }
 
-// ====================== 导出全部客户（Excel） ======================
-function exportAllCustomer(){
-    if(cusData.length === 0){
-        alert("暂无客户可导出");
-        return;
-    }
-
-    let header = "业务员,客户编号,客户姓名,联系电话,产品名称,客户状态,复审日期,客户资质,备注信息,添加时间\n";
-    let csv = header;
-
+function exportAllCustomer() {
+    if (cusData.length === 0) { alert("暂无客户可导出"); return; }
+    let csv = "业务员,客户编号,姓名,电话,产品,状态,复审日期,资质,备注\n";
     cusData.forEach(item => {
-        let row = [
-            item.sellerName || item.sellerAcc,
-            item.cusCode || "",
-            item.name || "",
-            item.phone || "",
-            item.product || "",
-            item.status || "",
-            item.review || "",
-            (item.qual || "").replace(/,/g, "，"),
-            (item.note || "").replace(/,/g, "，"),
-            item.addTime || ""
-        ].map(e => `"${e}"`).join(",");
-        csv += row + "\n";
+        csv += `"${item.sellerName}","${item.cusCode || ''}","${item.name}","${item.phone}","${item.product || ''}","${item.status}","${item.review}","${(item.qual || '').replace(/,/g, '，')}","${(item.note || '').replace(/,/g, '，')}"\n`;
     });
-
-    let blob = new Blob([new Uint8Array([0xEF,0xBB,0xBF]), csv], {type: "text/csv;charset=utf-8;"});
+    let blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
     let url = URL.createObjectURL(blob);
     let a = document.createElement("a");
     a.href = url;
-    a.download = "客户资料_" + new Date().toLocaleDateString() + ".csv";
+    a.download = "全部客户数据.csv";
     a.click();
-    URL.revokeObjectURL(url);
-    alert("导出成功！文件已下载");
 }
+
+setInterval(async () => {
+    await loadFromCloud();
+    if (!document.getElementById("loginPage").classList.contains("hide")) renderAllTable();
+}, 3000);
 </script>
 </body>
 </html>
