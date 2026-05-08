@@ -2,46 +2,467 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理员后台</title>
-    <style>*{margin:0;padding:0;box-sizing:border-box;font-family:微软雅黑}body{background:#f0f3f8}.hide{display:none}.login{width:400px;margin:100px auto;background:white;padding:40px;border-radius:12px;box-shadow:0 4px 20px #00000010}h2{text-align:center;margin-bottom:30px;color:#165DFF}.input{width:100%;height:44px;margin-bottom:15px;padding:0 15px;border:1px solid #ddd;border-radius:6px}.btn{width:100%;height:46px;background:#165DFF;color:white;border:none;border-radius:6px;font-size:16px}.top{background:#165DFF;color:white;padding:15px 30px;display:flex;justify-content:space-between;align-items:center}.top button{margin-left:10px;padding:6px 12px;border:none;border-radius:4px}.list{padding:20px}.table{width:100%;background:white;border-radius:8px;overflow:hidden}.table th,.table td{padding:12px;text-align:center;border-bottom:1px solid #eee}.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:#00000080;display:flex;align-items:center;justify-content:center}.modal .box{background:white;padding:30px;width:400px;border-radius:10px}.modal input{width:100%;height:40px;margin-bottom:10px;padding:0 10px}</style>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:"微软雅黑";}
+        body{background:#f0f3f8;}
+        .hide{display:none !important;}
+        .login-card{width:400px;background:#fff;padding:40px;border-radius:10px;box-shadow:0 5px 25px #00000010;margin:100px auto;}
+        .title{text-align:center;font-size:26px;color:#165DFF;font-weight:bold;margin-bottom:30px;}
+        .inp{width:100%;height:46px;padding:0 15px;margin-bottom:18px;border:1px solid #dde0e6;border-radius:6px;font-size:15px;}
+        .login-btn{width:100%;height:46px;background:#165DFF;color:#fff;border:none;border-radius:6px;font-size:16px;cursor:pointer;}
+        .head{height:65px;background:#165DFF;display:flex;justify-content:space-between;align-items:center;padding:0 30px;color:#fff;}
+        .sys-name{font-size:22px;font-weight:bold;}
+        .user-box{font-size:16px;display:flex;align-items:center;gap:8px;}
+        .edit-name{background:#fff;color:#165DFF;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
+        .search-bar{padding:18px 30px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+        #searchKey{width:320px;height:36px;padding:0 12px;border:1px solid #ddd;border-radius:4px;font-size:14px;}
+        #sellerSelect{height:36px;padding:0 12px;border:1px solid #ddd;border-radius:4px;}
+        .btn-blue{background:#165DFF;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
+        .btn-gray{background:#999;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
+        .btn-red{background:#dc3545;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
+        .btn-green{background:#28a745;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
+        .table-container{width:94%;margin:0 3%;border:1px solid #eee;border-radius:8px;overflow:hidden;margin-bottom:15px;}
+        .table-scroll{max-height:280px;overflow-y:auto;}
+        table{width:100%;border-collapse:collapse;}
+        th,td{border:1px solid #eee;padding:11px;text-align:center;font-size:14px;}
+        .sub-title{font-size:17px;font-weight:bold;padding:15px 30px;margin-top:10px;}
+        .warn-tit{color:#dc3545;}
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:999;}
+        .modal-content{background:#fff;padding:25px;border-radius:8px;width:750px;max-height:80vh;}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
+        .modal-header h3{color:#165DFF;}
+        .close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#999;}
+        .modal-body input,.modal-body select{padding:7px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:260px;}
+        .modal-body textarea{padding:10px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:98%;resize:vertical;min-height:100px;}
+        .modal-footer{margin-top:15px;text-align:right;}
+        .modal-footer button{padding:8px 22px;background:#165DFF;color:#fff;border:none;border-radius:4px;cursor:pointer;}
+        #sellerModal .modal-content{width:600px;}
+        #addSellerModal .modal-content{width:400px;}
+    </style>
 </head>
 <body>
-<div class="login" id="login">
-    <h2>管理员登录</h2>
-    <input class="input" id="user" placeholder="账号" value="admin">
-    <input class="input" id="pwd" placeholder="密码" type="password" value="123456">
-    <button class="btn" onclick="login()">登录</button>
+<div id="loginPage">
+    <div class="login-card">
+        <div class="title">管理员登录</div>
+        <input class="inp" type="text" id="acc" placeholder="管理员账号" value="admin">
+        <input class="inp" type="password" id="pwd" placeholder="密码" value="123456">
+        <button class="login-btn" onclick="login()">登录</button>
+    </div>
 </div>
-<div class="hide" id="main">
-    <div class="top">
-        <div>管理员后台</div>
-        <div>
-            <button onclick="addUser()">添加业务员</button>
-            <button onclick="logout()">退出</button>
+<div id="mainPage" class="hide">
+    <div class="head">
+        <div class="sys-name">管理员后台</div>
+        <div class="user-box">
+            <button class="edit-name" onclick="openPwdModal()">修改密码</button>
+            <button class="edit-name" onclick="openAddSellerModal()">添加业务员</button>
+            <button class="edit-name" onclick="openSellerModal()">管理业务员</button>
+            <button class="edit-name" onclick="exportAllCustomer()">导出全部客户</button>
+            <button class="edit-name" onclick="logout()">退出</button>
         </div>
     </div>
-    <div class="list">
-        <div class="table">
-            <table width="100%">
-                <tr><th>账号</th><th>姓名</th><th>状态</th><th>操作</th></tr>
-                <tbody id="userList"></tbody>
+    <div class="search-bar">
+        <select id="sellerSelect">
+            <option value="all">全部业务员（仅正常）</option>
+        </select>
+        <input type="text" id="searchKey" placeholder="搜索：编号/姓名/电话/产品">
+        <button class="btn-blue" onclick="doSearch()">搜索</button>
+        <button class="btn-gray" onclick="resetSearch()">重置</button>
+    </div>
+    <div class="sub-title">全部客户列表（可编辑所有业务员客户）</div>
+    <div class="table-container">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>业务员</th>
+                        <th>客户编号</th>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>产品</th>
+                        <th>状态</th>
+                        <th>复审日期</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="cusTable"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="sub-title warn-tit">⚠️ 已禁用业务员及客户（留档可查）</div>
+    <div class="table-container">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>已禁用业务员</th>
+                        <th>客户编号</th>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>产品</th>
+                        <th>状态</th>
+                        <th>复审日期</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="archivedTable"></tbody>
             </table>
         </div>
     </div>
 </div>
-<div class="hide" id="modal"><div class="box"><input id="acc" placeholder="账号"><input id="name" placeholder="姓名"><button onclick="saveUser()">保存</button></div></div>
+
+<!-- 编辑客户弹窗 -->
+<div id="editModal" class="modal hide">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>编辑客户</h3>
+            <button class="close-btn" onclick="closeEditModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editIdx">
+            客户编号：<input type="text" id="editCusCode"><br>
+            客户姓名：<input type="text" id="editName"><br>
+            联系电话：<input type="text" id="editPhone"><br>
+            产品名称：<input type="text" id="editProduct"><br>
+            客户状态：<select id="editStatus"><option>意向</option><option>下款</option></select><br>
+            复审日期：<input type="date" id="editReviewDate"><br>
+            客户资质：<textarea id="editQualification"></textarea><br>
+            备注信息：<input type="text" id="editNote"><br>
+        </div>
+        <div class="modal-footer">
+            <button onclick="saveEdit()">保存修改</button>
+        </div>
+    </div>
+</div>
+
+<!-- 修改密码弹窗 -->
+<div id="pwdModal" class="modal hide">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>修改管理员密码</h3>
+            <button class="close-btn" onclick="closePwdModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <input type="password" id="oldPwd" placeholder="原密码"><br>
+            <input type="password" id="newPwd" placeholder="新密码"><br>
+            <input type="password" id="confirmPwd" placeholder="确认新密码"><br>
+        </div>
+        <div class="modal-footer">
+            <button onclick="saveAdminPwd()">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 添加业务员弹窗 -->
+<div id="addSellerModal" class="modal hide">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>添加业务员</h3>
+            <button class="close-btn" onclick="closeAddSellerModal()">×</button>
+        </div>
+        <div class="modal-body">
+            账号：<input type="text" id="newSellerAcc" placeholder="请输入账号"><br>
+            姓名：<input type="text" id="newSellerName" placeholder="请输入姓名"><br>
+            密码：<input type="password" id="newSellerPwd" placeholder="默认123456" value="123456"><br>
+        </div>
+        <div class="modal-footer">
+            <button onclick="saveNewSeller()">确认添加</button>
+        </div>
+    </div>
+</div>
+
+<!-- 管理业务员弹窗 -->
+<div id="sellerModal" class="modal hide">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>业务员管理（禁用后无法登录，客户保留）</h3>
+            <button class="close-btn" onclick="closeSellerModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <table width="100%" border="1" cellpadding="8" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>账号</th>
+                        <th>姓名</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="sellerList"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 <script>
-const API = "https://jsonstorage.net/api/items/em-crm-2026-repair";
-let data = {users:{admin:{pwd:"123456",role:"admin"}},customers:[]};
-async function load(){let r=await fetch(API);if(r.ok)data=await r.json()}
-async function save(){await fetch(API,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})}
-function login(){let u=document.getElementById("user").value,p=document.getElementById("pwd").value;if(u==="admin"&&data.users.admin&&data.users.admin.pwd===p){document.getElementById("login").classList.add("hide");document.getElementById("main").classList.remove("hide");render();return}alert("账号或密码错误")}
-function render(){let b=document.getElementById("userList");b.innerHTML="";for(let i in data.users){if(i==="admin")continue;let u=data.users[i];b.innerHTML+=`<tr><td>${i}</td><td>${u.name}</td><td>${u.deleted?"禁用":"正常"}</td><td><button onclick='toggle("${i}")'>${u.deleted?"启用":"禁用"}</button></td></tr>`}}
-function addUser(){document.getElementById("modal").classList.remove("hide")}
-async function saveUser(){let a=document.getElementById("acc").value,n=document.getElementById("name").value;if(!a||!n)return;if(data.users[a]){alert("账号已存在");return}data.users[a]={pwd:"123456",name:n,deleted:false};await save();render();document.getElementById("modal").classList.add("hide")}
-async function toggle(a){data.users[a].deleted=!data.users[a].deleted;await save();render()}
-function logout(){location.reload()}
-window.onload=load
+const SYNC_URL = "https://jsonstorage.net/api/items/em-crm-2026-repair";
+let userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
+let cusData = [];
+
+async function loadFromCloud() {
+    try {
+        let res = await fetch(SYNC_URL);
+        if (!res.ok) throw new Error("云端数据不存在");
+        let data = await res.json();
+        if (data.userList) userList = data.userList;
+        if (data.cusData) cusData = data.cusData;
+    } catch (e) {
+        userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
+        cusData = [];
+        await saveToCloud();
+    }
+}
+
+async function saveToCloud() {
+    await fetch(SYNC_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userList, cusData })
+    });
+}
+
+function login() {
+    let a = document.getElementById("acc").value.trim();
+    let p = document.getElementById("pwd").value.trim();
+    if (a === "admin" && userList.admin.pwd === p) {
+        document.getElementById("loginPage").classList.add("hide");
+        document.getElementById("mainPage").classList.remove("hide");
+        renderSellerSelect();
+        renderAllCustomer();
+    } else {
+        alert("账号或密码错误");
+    }
+}
+
+function renderSellerSelect() {
+    let sel = document.getElementById("sellerSelect");
+    sel.innerHTML = '<option value="all">全部业务员（仅正常）</option>';
+    for (let k in userList) {
+        if (k !== "admin" && !userList[k].deleted) {
+            sel.innerHTML += `<option value="${k}">${userList[k].name}(${k})</option>`;
+        }
+    }
+}
+
+function renderAllCustomer() {
+    let key = document.getElementById("searchKey").value.trim();
+    let selVal = document.getElementById("sellerSelect").value;
+    let normalList = cusData.filter(x => !userList[x.sellerAcc]?.deleted);
+    let archivedList = cusData.filter(x => userList[x.sellerAcc]?.deleted);
+    if (selVal !== "all") normalList = normalList.filter(x => x.sellerAcc === selVal);
+    if (key) {
+        normalList = normalList.filter(x =>
+            (x.cusCode || "").includes(key) ||
+            x.name.includes(key) ||
+            x.phone.includes(key) ||
+            (x.product || "").includes(key)
+        );
+        archivedList = archivedList.filter(x =>
+            (x.cusCode || "").includes(key) ||
+            x.name.includes(key) ||
+            x.phone.includes(key) ||
+            (x.product || "").includes(key)
+        );
+    }
+    let normalHtml = "";
+    normalList.forEach(item => {
+        let idx = cusData.indexOf(item);
+        normalHtml += `<tr>
+            <td>${userList[item.sellerAcc]?.name || item.sellerAcc}</td>
+            <td>${item.cusCode || '-'}</td>
+            <td>${item.name}</td>
+            <td>${item.phone}</td>
+            <td>${item.product || '-'}</td>
+            <td>${item.status}</td>
+            <td>${item.reviewDate}</td>
+            <td>
+                <button class="btn-blue" onclick="openEditModal(${idx})">编辑</button>
+                <button class="btn-red" onclick="delCus(${idx})">删除</button>
+            </td>
+        </tr>`;
+    });
+    document.getElementById("cusTable").innerHTML = normalHtml || "<tr><td colspan='8'>暂无客户</td></tr>";
+    let archivedHtml = "";
+    archivedList.forEach(item => {
+        let idx = cusData.indexOf(item);
+        archivedHtml += `<tr>
+            <td>${userList[item.sellerAcc]?.name || item.sellerAcc}（已禁用）</td>
+            <td>${item.cusCode || '-'}</td>
+            <td>${item.name}</td>
+            <td>${item.phone}</td>
+            <td>${item.product || '-'}</td>
+            <td>${item.status}</td>
+            <td>${item.reviewDate}</td>
+            <td>
+                <button class="btn-blue" onclick="openEditModal(${idx})">编辑</button>
+                <button class="btn-red" onclick="delCus(${idx})">删除</button>
+            </td>
+        </tr>`;
+    });
+    document.getElementById("archivedTable").innerHTML = archivedHtml || "<tr><td colspan='8'>暂无留档客户</td></tr>";
+}
+
+function openEditModal(idx) {
+    let item = cusData[idx];
+    document.getElementById("editIdx").value = idx;
+    document.getElementById("editCusCode").value = item.cusCode || '';
+    document.getElementById("editName").value = item.name;
+    document.getElementById("editPhone").value = item.phone;
+    document.getElementById("editProduct").value = item.product || '';
+    document.getElementById("editStatus").value = item.status;
+    document.getElementById("editReviewDate").value = item.reviewDate;
+    document.getElementById("editQualification").value = item.qualification || '';
+    document.getElementById("editNote").value = item.note || '';
+    document.getElementById("editModal").classList.remove("hide");
+}
+
+function closeEditModal() {
+    document.getElementById("editModal").classList.add("hide");
+}
+
+async function saveEdit() {
+    let idx = document.getElementById("editIdx").value;
+    cusData[idx].cusCode = document.getElementById("editCusCode").value.trim();
+    cusData[idx].name = document.getElementById("editName").value.trim();
+    cusData[idx].phone = document.getElementById("editPhone").value.trim();
+    cusData[idx].product = document.getElementById("editProduct").value.trim();
+    cusData[idx].status = document.getElementById("editStatus").value;
+    cusData[idx].reviewDate = document.getElementById("editReviewDate").value;
+    cusData[idx].qualification = document.getElementById("editQualification").value.trim();
+    cusData[idx].note = document.getElementById("editNote").value.trim();
+    await saveToCloud();
+    alert("保存成功");
+    closeEditModal();
+    renderAllCustomer();
+}
+
+async function delCus(idx) {
+    if (!confirm("确定删除该客户？")) return;
+    cusData.splice(idx, 1);
+    await saveToCloud();
+    renderAllCustomer();
+}
+
+function doSearch() {
+    renderAllCustomer();
+}
+
+function resetSearch() {
+    document.getElementById("searchKey").value = "";
+    document.getElementById("sellerSelect").value = "all";
+    renderAllCustomer();
+}
+
+function openPwdModal() {
+    document.getElementById("pwdModal").classList.remove("hide");
+    document.getElementById("oldPwd").value = "";
+    document.getElementById("newPwd").value = "";
+    document.getElementById("confirmPwd").value = "";
+}
+
+function closePwdModal() {
+    document.getElementById("pwdModal").classList.add("hide");
+}
+
+async function saveAdminPwd() {
+    let old = document.getElementById("oldPwd").value.trim();
+    let np = document.getElementById("newPwd").value.trim();
+    let cp = document.getElementById("confirmPwd").value.trim();
+    if (!old || !np || !cp) { alert("请填写完整"); return; }
+    if (old !== userList.admin.pwd) { alert("原密码错误"); return; }
+    if (np !== cp) { alert("两次密码不一致"); return; }
+    userList.admin.pwd = np;
+    await saveToCloud();
+    alert("密码修改成功，请重新登录");
+    closePwdModal();
+    logout();
+}
+
+function openAddSellerModal() {
+    document.getElementById("addSellerModal").classList.remove("hide");
+    document.getElementById("newSellerAcc").value = "";
+    document.getElementById("newSellerName").value = "";
+    document.getElementById("newSellerPwd").value = "123456";
+}
+
+function closeAddSellerModal() {
+    document.getElementById("addSellerModal").classList.add("hide");
+}
+
+async function saveNewSeller() {
+    let acc = document.getElementById("newSellerAcc").value.trim();
+    let name = document.getElementById("newSellerName").value.trim();
+    let pwd = document.getElementById("newSellerPwd").value.trim() || "123456";
+    if (!acc || !name) { alert("账号和姓名不能为空"); return; }
+    await loadFromCloud();
+    if (userList[acc]) { alert("账号已存在"); return; }
+    userList[acc] = { pwd, name, role: "seller", deleted: false };
+    await saveToCloud();
+    alert("添加成功");
+    closeAddSellerModal();
+    renderSellerSelect();
+    renderAllCustomer();
+}
+
+function openSellerModal() {
+    document.getElementById("sellerModal").classList.remove("hide");
+    renderSellerList();
+}
+
+function closeSellerModal() {
+    document.getElementById("sellerModal").classList.add("hide");
+}
+
+function renderSellerList() {
+    let html = "";
+    for (let k in userList) {
+        if (k === "admin") continue;
+        let u = userList[k];
+        let status = u.deleted ? "禁用" : "正常";
+        let btn = u.deleted
+            ? `<button class="btn-green" onclick="toggleSeller('${k}')">启用</button>`
+            : `<button class="btn-red" onclick="toggleSeller('${k}')">禁用</button>`;
+        html += `<tr><td>${k}</td><td>${u.name}</td><td>${status}</td><td>${btn}</td></tr>`;
+    }
+    document.getElementById("sellerList").innerHTML = html || "<tr><td colspan='4'>暂无业务员</td></tr>";
+}
+
+async function toggleSeller(acc) {
+    userList[acc].deleted = !userList[acc].deleted;
+    await saveToCloud();
+    renderSellerList();
+    renderSellerSelect();
+    renderAllCustomer();
+}
+
+function exportAllCustomer() {
+    if (cusData.length === 0) { alert("暂无客户可导出"); return; }
+    let csv = "业务员,客户编号,姓名,电话,产品,状态,复审日期,客户资质,备注,添加时间\n";
+    cusData.forEach(item => {
+        csv += `"${userList[item.sellerAcc]?.name || item.sellerAcc}","${item.cusCode || ''}","${item.name}","${item.phone}","${item.product || ''}","${item.status}","${item.reviewDate}","${(item.qualification || '').replace(/"/g, '""')}","${(item.note || '').replace(/"/g, '""')}","${item.addTime}"\n`;
+    });
+    let blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "全部客户数据.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function logout() {
+    location.reload();
+}
+
+window.onload = loadFromCloud;
+setInterval(async () => {
+    await loadFromCloud();
+    if (!document.getElementById("mainPage").classList.contains("hide")) {
+        renderAllCustomer();
+        renderSellerList();
+    }
+}, 3000);
 </script>
 </body>
 </html>
