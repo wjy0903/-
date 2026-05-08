@@ -1,84 +1,440 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>客户登记</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:Microsoft YaHei;}
-body{background:#f4f6f8;padding:20px;}
-.box{max-width:500px;margin:50px auto;background:#fff;padding:30px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
-.box h2{margin-bottom:20px;text-align:center;color:#2c3e50;}
-input,select,button{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:4px;font-size:14px;}
-button{background:#2d8cf0;color:#fff;border:none;cursor:pointer;}
-.table{width:100%;border-collapse:collapse;margin-top:20px;}
-.table th,.table td{padding:10px;border-bottom:1px solid #eee;}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EM客户管理系统 - 业务员端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        .login-box {
+            max-width: 400px;
+            margin: 100px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        }
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+        .login-box .form-group {
+            margin-bottom: 20px;
+        }
+        .login-box label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-box button:hover {
+            background: #2980b9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 20px;
+        }
+        .header button {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .header button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .form-container {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .form-container h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .form-group button:hover {
+            background: #2980b9;
+        }
+        .table-container {
+            padding: 20px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .modal h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .modal .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-blue {
+            background: #3498db;
+            color: #fff;
+        }
+        .btn-blue:hover {
+            background: #2980b9;
+        }
+    </style>
 </head>
 <body>
-<div class="box" id="loginBox">
-    <h2>业务员登录</h2>
-    <input id="account" placeholder="账号">
-    <input id="pwd" placeholder="密码">
-    <button onclick="login()">登录</button>
-</div>
+    <!-- 登录页 -->
+    <div id="loginPage" class="login-box">
+        <h2>业务员登录</h2>
+        <div class="form-group">
+            <label>账号</label>
+            <input type="text" id="sellerAccount" placeholder="请输入业务员账号">
+        </div>
+        <div class="form-group">
+            <label>密码</label>
+            <input type="password" id="sellerPwd" placeholder="请输入密码">
+        </div>
+        <button onclick="sellerLogin()">登录</button>
+    </div>
 
-<div class="box" id="mainBox" style="display:none;">
-    <h2>客户登记</h2>
-    <input id="name" placeholder="客户姓名">
-    <input id="phone" placeholder="客户电话">
-    <input id="product" placeholder="产品名称">
-    <button onclick="submitCust()">提交</button>
+    <!-- 主页面 -->
+    <div id="mainPage" class="container" style="display: none;">
+        <div class="header">
+            <h1>EM客户管理系统 - 业务员端</h1>
+            <div>
+                <button onclick="openChangePwdModal()">修改密码</button>
+                <button onclick="logout()">退出登录</button>
+            </div>
+        </div>
 
-    <h3 style="margin-top:30px;">我的客户</h3>
-    <table class="table">
-        <thead><tr><th>姓名</th><th>电话</th><th>产品</th></tr></thead>
-        <tbody id="list"></tbody>
-    </table>
-</div>
+        <div class="form-container">
+            <h3>添加新客户</h3>
+            <div class="form-group">
+                <label>客户姓名</label>
+                <input type="text" id="customerName" placeholder="请输入客户姓名">
+            </div>
+            <div class="form-group">
+                <label>客户电话</label>
+                <input type="text" id="customerPhone" placeholder="请输入客户电话">
+            </div>
+            <div class="form-group">
+                <label>产品名称</label>
+                <input type="text" id="customerProduct" placeholder="请输入产品名称">
+            </div>
+            <div class="form-group">
+                <label>复审时间</label>
+                <input type="date" id="reviewDate">
+            </div>
+            <div class="form-group">
+                <button onclick="addCustomer()">提交客户信息</button>
+            </div>
+        </div>
 
-<script>
-const API = "https://api.crmeasy.com/api";
-let currSeller = "";
+        <div class="table-container">
+            <h3 style="margin-bottom: 15px; color: #2c3e50;">我的客户列表</h3>
+            <table id="myCustomerTable">
+                <thead>
+                    <tr>
+                        <th>客户编号</th>
+                        <th>客户姓名</th>
+                        <th>客户电话</th>
+                        <th>产品名称</th>
+                        <th>录入时间</th>
+                        <th>复审时间</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
 
-async function login() {
-    let account = document.getElementById("account").value;
-    let pwd = document.getElementById("pwd").value;
-    let r = await fetch(API + "/checkSeller?account=" + account + "&pwd=" + pwd);
-    let d = await r.json();
-    if (d.success) {
-        currSeller = account;
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("mainBox").style.display = "block";
-        loadMyCust();
-    } else {
-        alert("账号或密码错误");
-    }
-}
+    <!-- 修改密码弹窗 -->
+    <div id="changePwdModal" class="modal-overlay">
+        <div class="modal">
+            <h3>修改业务员密码</h3>
+            <div class="form-group">
+                <label>原密码</label>
+                <input type="password" id="sellerOldPwd">
+            </div>
+            <div class="form-group">
+                <label>新密码</label>
+                <input type="password" id="sellerNewPwd">
+            </div>
+            <div class="form-group">
+                <label>确认新密码</label>
+                <input type="password" id="sellerConfirmNewPwd">
+            </div>
+            <div class="btn-group">
+                <button onclick="closeModal('changePwdModal')">取消</button>
+                <button class="btn-blue" onclick="changeSellerPwd()">确认修改</button>
+            </div>
+        </div>
+    </div>
 
-async function submitCust() {
-    let name = document.getElementById("name").value;
-    let phone = document.getElementById("phone").value;
-    let product = document.getElementById("product").value;
-    await fetch(API + "/addCust", {
-        method: "POST",
-        body: JSON.stringify({ name, phone, product, seller: currSeller })
-    });
-    document.getElementById("name").value = "";
-    document.getElementById("phone").value = "";
-    document.getElementById("product").value = "";
-    loadMyCust();
-}
+    <script>
+        // 云端数据库接口（和管理员后台同一个）
+        const DB_URL = "https://jsonblob.com/api/jsonBlob/1342259356623298560";
+        let currentSeller = null;
 
-async function loadMyCust() {
-    let r = await fetch(API + "/myCust?seller=" + currSeller);
-    let d = await r.json();
-    let html = "";
-    d.data.forEach(c => {
-        html += `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.product}</td></tr>`;
-    });
-    document.getElementById("list").innerHTML = html;
-}
-</script>
+        // 工具函数：获取云端数据
+        async function getDB() {
+            const res = await fetch(DB_URL);
+            return await res.json();
+        }
+
+        // 工具函数：保存数据到云端
+        async function saveDB(data) {
+            await fetch(DB_URL, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+        }
+
+        // 业务员登录
+        async function sellerLogin() {
+            const account = document.getElementById("sellerAccount").value.trim();
+            const pwd = document.getElementById("sellerPwd").value.trim();
+            const db = await getDB();
+
+            const user = (db.users || []).find(u => u.account === account && u.pwd === pwd && !u.deleted);
+            if (user) {
+                currentSeller = user;
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("mainPage").style.display = "block";
+                renderMyCustomerTable();
+            } else {
+                alert("账号或密码错误，或该账号已被管理员删除！");
+            }
+        }
+
+        // 渲染业务员自己的客户表格
+        async function renderMyCustomerTable() {
+            if (!currentSeller) return;
+            const db = await getDB();
+            const customers = (db.customers || []).filter(c => c.sellerAccount === currentSeller.account);
+
+            const tbody = document.querySelector("#myCustomerTable tbody");
+            tbody.innerHTML = "";
+            customers.forEach(c => {
+                const row = document.createElement("tr");
+                const isExpired = new Date(c.reviewDate) < new Date();
+                const statusText = isExpired ? "已过期" : "正常";
+                const statusColor = isExpired ? "color: #e74c3c;" : "color: #27ae60;";
+                row.innerHTML = `
+                    <td>${c.id}</td>
+                    <td>${c.name}</td>
+                    <td>${c.phone}</td>
+                    <td>${c.product}</td>
+                    <td>${c.createTime}</td>
+                    <td>${c.reviewDate}</td>
+                    <td style="${statusColor}">${statusText}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // 添加客户
+        async function addCustomer() {
+            if (!currentSeller) return;
+
+            const name = document.getElementById("customerName").value.trim();
+            const phone = document.getElementById("customerPhone").value.trim();
+            const product = document.getElementById("customerProduct").value.trim();
+            const reviewDate = document.getElementById("reviewDate").value;
+
+            if (!name || !phone || !product || !reviewDate) {
+                alert("请填写完整的客户信息！");
+                return;
+            }
+
+            const db = await getDB();
+            if (!db.customers) db.customers = [];
+
+            // 生成客户编号（时间戳）
+            const customerId = "C" + Date.now();
+            const now = new Date();
+            const createTime = now.toISOString().split("T")[0];
+
+            db.customers.push({
+                id: customerId,
+                name,
+                phone,
+                product,
+                sellerAccount: currentSeller.account,
+                sellerName: currentSeller.name,
+                createTime,
+                reviewDate
+            });
+
+            await saveDB(db);
+            alert("客户信息提交成功！");
+
+            // 清空输入框
+            document.getElementById("customerName").value = "";
+            document.getElementById("customerPhone").value = "";
+            document.getElementById("customerProduct").value = "";
+            document.getElementById("reviewDate").value = "";
+
+            renderMyCustomerTable();
+        }
+
+        // 打开修改密码弹窗
+        function openChangePwdModal() {
+            document.getElementById("sellerOldPwd").value = "";
+            document.getElementById("sellerNewPwd").value = "";
+            document.getElementById("sellerConfirmNewPwd").value = "";
+            document.getElementById("changePwdModal").style.display = "flex";
+        }
+
+        // 修改业务员密码
+        async function changeSellerPwd() {
+            if (!currentSeller) return;
+
+            const oldPwd = document.getElementById("sellerOldPwd").value;
+            const newPwd = document.getElementById("sellerNewPwd").value;
+            const confirmPwd = document.getElementById("sellerConfirmNewPwd").value;
+
+            if (oldPwd !== currentSeller.pwd) {
+                alert("原密码错误！");
+                return;
+            }
+            if (newPwd !== confirmPwd) {
+                alert("两次输入的新密码不一致！");
+                return;
+            }
+            if (!newPwd) {
+                alert("新密码不能为空！");
+                return;
+            }
+
+            const db = await getDB();
+            const user = db.users.find(u => u.account === currentSeller.account);
+            if (user) user.pwd = newPwd;
+
+            await saveDB(db);
+            alert("密码修改成功！请重新登录。");
+            closeModal("changePwdModal");
+            logout();
+        }
+
+        // 关闭弹窗
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        // 退出登录
+        function logout() {
+            location.reload();
+        }
+    </script>
 </body>
 </html>
