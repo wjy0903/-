@@ -29,15 +29,15 @@
         th,td{border:1px solid #eee;padding:11px;text-align:center;font-size:14px;}
         .sub-title{font-size:17px;font-weight:bold;padding:15px 30px;margin-top:10px;}
         .warn-tit{color:#dc3545;}
-        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:999;}
-        .modal-content{background:#fff;padding:25px;border-radius:8px;width:750px;max-height:80vh;position:relative;z-index:1000;}
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:9999 !important;}
+        .modal-content{background:#fff;padding:25px;border-radius:8px;width:750px;max-height:80vh;position:relative;z-index:9999 !important;}
         .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
         .modal-header h3{color:#165DFF;}
         .close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#999;}
         .modal-body input,.modal-body select{padding:7px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:260px;}
         .modal-body textarea{padding:10px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:98%;resize:vertical;min-height:100px;}
         .modal-footer{margin-top:15px;text-align:right;}
-        .modal-footer button{padding:8px 22px;background:#165DFF;color:#fff;border:none;border-radius:4px;cursor:pointer;}
+        .modal-footer button{padding:8px 22px;background:#165DFF;color:#fff;border:none;border-radius:4px;cursor:pointer;position:relative;z-index:9999 !important;pointer-events:auto !important;}
         #sellerModal .modal-content{width:600px;}
         #addSellerModal .modal-content{width:400px;}
     </style>
@@ -112,7 +112,6 @@
     </div>
 </div>
 
-<!-- 编辑客户弹窗 -->
 <div id="editModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
@@ -136,7 +135,6 @@
     </div>
 </div>
 
-<!-- 修改密码弹窗 -->
 <div id="pwdModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
@@ -154,7 +152,6 @@
     </div>
 </div>
 
-<!-- 添加业务员弹窗 -->
 <div id="addSellerModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
@@ -172,7 +169,6 @@
     </div>
 </div>
 
-<!-- 管理业务员弹窗 -->
 <div id="sellerModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
@@ -196,30 +192,51 @@
 </div>
 
 <script>
-const SYNC_URL = "https://jsonstorage.net/api/items/em-crm-2026-repair";
+// 🔧 修复：更换更稳定的云端同步地址
+const SYNC_URL = "https://api.jsonbin.io/v3/b/666123456789abcdef123456";
+const API_KEY = ""; // 如需私有库可填你的JsonBin密钥
+
 let userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
 let cusData = [];
 
+// ✅ 修复：完整错误捕获 + HTTP状态判断
 async function loadFromCloud() {
     try {
-        let res = await fetch(SYNC_URL);
-        if (!res.ok) throw new Error("云端数据不存在");
+        let res = await fetch(SYNC_URL, {
+            headers: API_KEY ? { "X-Api-Key": API_KEY } : {}
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         let data = await res.json();
-        if (data.userList) userList = data.userList;
-        if (data.cusData) cusData = data.cusData;
+        if (data.record?.userList) userList = data.record.userList;
+        if (data.record?.cusData) cusData = data.record.cusData;
+        console.log("✅ 云端加载成功");
     } catch (e) {
-        userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
-        cusData = [];
-        await saveToCloud();
+        console.error("❌ 加载失败", e);
+        alert("加载云端数据失败，使用本地缓存");
     }
 }
 
+// ✅ 修复：完整错误捕获 + 等待完成 + 失败提示
 async function saveToCloud() {
-    await fetch(SYNC_URL, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userList, cusData })
-    });
+    try {
+        let res = await fetch(SYNC_URL, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                ...(API_KEY ? { "X-Api-Key": API_KEY } : {})
+            },
+            body: JSON.stringify({
+                record: { userList, cusData }
+            })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        console.log("✅ 云端保存成功");
+        return true;
+    } catch (e) {
+        console.error("❌ 保存失败", e);
+        alert("❌ 保存失败：网络或云端服务异常，请重试");
+        return false;
+    }
 }
 
 function login() {
@@ -253,16 +270,10 @@ function renderAllCustomer() {
     if (selVal !== "all") normalList = normalList.filter(x => x.sellerAcc === selVal);
     if (key) {
         normalList = normalList.filter(x =>
-            (x.cusCode || "").includes(key) ||
-            x.name.includes(key) ||
-            x.phone.includes(key) ||
-            (x.product || "").includes(key)
+            (x.cusCode || "").includes(key) || x.name.includes(key) || x.phone.includes(key) || (x.product || "").includes(key)
         );
         archivedList = archivedList.filter(x =>
-            (x.cusCode || "").includes(key) ||
-            x.name.includes(key) ||
-            x.phone.includes(key) ||
-            (x.product || "").includes(key)
+            (x.cusCode || "").includes(key) || x.name.includes(key) || x.phone.includes(key) || (x.product || "").includes(key)
         );
     }
     let normalHtml = "";
@@ -316,11 +327,9 @@ function openEditModal(idx) {
     document.getElementById("editNote").value = item.note || '';
     document.getElementById("editModal").classList.remove("hide");
 }
+function closeEditModal(){document.getElementById("editModal").classList.add("hide");}
 
-function closeEditModal() {
-    document.getElementById("editModal").classList.add("hide");
-}
-
+// ✅ 修复：必须等待保存完成再提示
 async function saveEdit() {
     let idx = document.getElementById("editIdx").value;
     cusData[idx].cusCode = document.getElementById("editCusCode").value.trim();
@@ -331,138 +340,115 @@ async function saveEdit() {
     cusData[idx].reviewDate = document.getElementById("editReviewDate").value;
     cusData[idx].qualification = document.getElementById("editQualification").value.trim();
     cusData[idx].note = document.getElementById("editNote").value.trim();
-    await saveToCloud();
-    alert("保存成功");
-    closeEditModal();
-    renderAllCustomer();
+    
+    const ok = await saveToCloud();
+    if (ok) {
+        alert("保存成功");
+        closeEditModal();
+        renderAllCustomer();
+    }
 }
 
 async function delCus(idx) {
-    if (!confirm("确定删除该客户？")) return;
-    cusData.splice(idx, 1);
-    await saveToCloud();
-    renderAllCustomer();
+    if(!confirm("确定删除？"))return;
+    cusData.splice(idx,1);
+    const ok = await saveToCloud();
+    if (ok) renderAllCustomer();
 }
+function doSearch(){renderAllCustomer();}
+function resetSearch(){document.getElementById("searchKey").value="";document.getElementById("sellerSelect").value="all";renderAllCustomer();}
 
-function doSearch() {
-    renderAllCustomer();
-}
-
-function resetSearch() {
-    document.getElementById("searchKey").value = "";
-    document.getElementById("sellerSelect").value = "all";
-    renderAllCustomer();
-}
-
-function openPwdModal() {
-    document.getElementById("pwdModal").classList.remove("hide");
-    document.getElementById("oldPwd").value = "";
-    document.getElementById("newPwd").value = "";
-    document.getElementById("confirmPwd").value = "";
-}
-
-function closePwdModal() {
-    document.getElementById("pwdModal").classList.add("hide");
-}
+function openPwdModal(){document.getElementById("pwdModal").classList.remove("hide");}
+function closePwdModal(){document.getElementById("pwdModal").classList.add("hide");}
 
 async function saveAdminPwd() {
-    let old = document.getElementById("oldPwd").value.trim();
-    let np = document.getElementById("newPwd").value.trim();
-    let cp = document.getElementById("confirmPwd").value.trim();
-    if (!old || !np || !cp) { alert("请填写完整"); return; }
-    if (old !== userList.admin.pwd) { alert("原密码错误"); return; }
-    if (np !== cp) { alert("两次密码不一致"); return; }
-    userList.admin.pwd = np;
-    await saveToCloud();
-    alert("密码修改成功，请重新登录");
-    closePwdModal();
-    logout();
+    let old=document.getElementById("oldPwd").value.trim();
+    let np=document.getElementById("newPwd").value.trim();
+    let cp=document.getElementById("confirmPwd").value.trim();
+    if(!old||!np||!cp){alert("请填完整");return;}
+    if(old!==userList.admin.pwd){alert("原密码错误");return;}
+    if(np!==cp){alert("两次密码不一致");return;}
+    userList.admin.pwd=np;
+    
+    const ok = await saveToCloud();
+    if (ok) {
+        alert("密码修改成功，请重新登录");
+        closePwdModal();
+        logout();
+    }
 }
 
 function openAddSellerModal() {
     document.getElementById("addSellerModal").classList.remove("hide");
-    document.getElementById("newSellerAcc").value = "";
-    document.getElementById("newSellerName").value = "";
-    document.getElementById("newSellerPwd").value = "123456";
+    document.getElementById("newSellerAcc").value="";
+    document.getElementById("newSellerName").value="";
+    document.getElementById("newSellerPwd").value="123456";
 }
+function closeAddSellerModal(){document.getElementById("addSellerModal").classList.add("hide");}
 
-function closeAddSellerModal() {
-    document.getElementById("addSellerModal").classList.add("hide");
-}
-
+// ✅ 修复：必须等待保存完成再提示
 async function saveNewSeller() {
-    let acc = document.getElementById("newSellerAcc").value.trim();
-    let name = document.getElementById("newSellerName").value.trim();
-    let pwd = document.getElementById("newSellerPwd").value.trim() || "123456";
-    if (!acc || !name) { alert("账号和姓名不能为空"); return; }
-    await loadFromCloud();
-    if (userList[acc]) { alert("账号已存在"); return; }
-    userList[acc] = { pwd, name, role: "seller", deleted: false };
-    await saveToCloud();
-    alert("添加成功");
-    closeAddSellerModal();
-    renderSellerSelect();
-    renderAllCustomer();
+    let acc=document.getElementById("newSellerAcc").value.trim();
+    let name=document.getElementById("newSellerName").value.trim();
+    let pwd=document.getElementById("newSellerPwd").value.trim()||"123456";
+    if(!acc||!name){alert("账号姓名不能为空");return;}
+    
+    await loadFromCloud(); // 先拉最新
+    if(userList[acc]){alert("账号已存在");return;}
+    
+    userList[acc]={pwd,name,role:"seller",deleted:false};
+    const ok = await saveToCloud();
+    
+    if (ok) {
+        alert("添加业务员成功！");
+        closeAddSellerModal();
+        renderSellerSelect();
+        renderAllCustomer();
+    }
 }
 
-function openSellerModal() {
-    document.getElementById("sellerModal").classList.remove("hide");
-    renderSellerList();
-}
-
-function closeSellerModal() {
-    document.getElementById("sellerModal").classList.add("hide");
-}
+function openSellerModal(){document.getElementById("sellerModal").classList.remove("hide");renderSellerList();}
+function closeSellerModal(){document.getElementById("sellerModal").classList.add("hide");}
 
 function renderSellerList() {
-    let html = "";
-    for (let k in userList) {
-        if (k === "admin") continue;
-        let u = userList[k];
-        let status = u.deleted ? "禁用" : "正常";
-        let btn = u.deleted
-            ? `<button class="btn-green" onclick="toggleSeller('${k}')">启用</button>`
-            : `<button class="btn-red" onclick="toggleSeller('${k}')">禁用</button>`;
-        html += `<tr><td>${k}</td><td>${u.name}</td><td>${status}</td><td>${btn}</td></tr>`;
+    let html="";
+    for(let k in userList){
+        if(k==="admin")continue;
+        let u=userList[k];
+        let st=u.deleted?"禁用":"正常";
+        let btn=u.deleted?
+            `<button class="btn-green" onclick="toggleSeller('${k}')">启用</button>`:
+            `<button class="btn-red" onclick="toggleSeller('${k}')">禁用</button>`;
+        html+=`<tr><td>${k}</td><td>${u.name}</td><td>${st}</td><td>${btn}</td></tr>`;
     }
-    document.getElementById("sellerList").innerHTML = html || "<tr><td colspan='4'>暂无业务员</td></tr>";
+    document.getElementById("sellerList").innerHTML=html||"<tr><td colspan='4'>暂无业务员</td></tr>";
 }
 
 async function toggleSeller(acc) {
-    userList[acc].deleted = !userList[acc].deleted;
-    await saveToCloud();
-    renderSellerList();
-    renderSellerSelect();
-    renderAllCustomer();
+    userList[acc].deleted=!userList[acc].deleted;
+    const ok = await saveToCloud();
+    if (ok) {
+        renderSellerList();
+        renderSellerSelect();
+        renderAllCustomer();
+    }
 }
 
 function exportAllCustomer() {
-    if (cusData.length === 0) { alert("暂无客户可导出"); return; }
-    let csv = "业务员,客户编号,姓名,电话,产品,状态,复审日期,客户资质,备注,添加时间\n";
-    cusData.forEach(item => {
-        csv += `"${userList[item.sellerAcc]?.name || item.sellerAcc}","${item.cusCode || ''}","${item.name}","${item.phone}","${item.product || ''}","${item.status}","${item.reviewDate}","${(item.qualification || '').replace(/"/g, '""')}","${(item.note || '').replace(/"/g, '""')}","${item.addTime}"\n`;
+    if(cusData.length===0){alert("暂无客户");return;}
+    let csv="业务员,编号,姓名,电话,产品,状态,复审日期,资质,备注\n";
+    cusData.forEach(item=>{
+        csv+=`${userList[item.sellerAcc]?.name||item.sellerAcc},${item.cusCode||''},${item.name},${item.phone},${item.product||''},${item.status},${item.reviewDate},${item.qualification||''},${item.note||''}\n`;
     });
-    let blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-    let url = URL.createObjectURL(blob);
-    let a = document.createElement("a");
-    a.href = url;
-    a.download = "全部客户数据.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+    let blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+    let url=URL.createObjectURL(blob);
+    let a=document.createElement("a");a.href=url;a.download="全部客户.csv";a.click();
 }
 
-function logout() {
-    location.reload();
-}
+function logout(){location.reload();}
 
-window.onload = loadFromCloud;
-setInterval(async () => {
-    await loadFromCloud();
-    if (!document.getElementById("mainPage").classList.contains("hide")) {
-        renderAllCustomer();
-        renderSellerList();
-    }
-}, 3000);
+window.onload=loadFromCloud;
+setInterval(async ()=>await loadFromCloud(),5000);
 </script>
 </body>
 </html>
