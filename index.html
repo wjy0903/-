@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EM客户管理系统</title>
+    <title>客户管理系统</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:"微软雅黑";}
         body{background:#f0f3f8;}
@@ -22,7 +22,7 @@
         .search-bar{padding:18px 30px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
         #searchKey{width:320px;height:36px;padding:0 12px;border:1px solid #ddd;border-radius:4px;font-size:14px;}
         .btn-blue{background:#165DFF;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
-        .btn-gray{background:#999;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;}
+        .btn-gray{background:#999;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
         .btn-add{background:#28a745;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
 
         .table-container{width:94%;margin:0 3%;border:1px solid #eee;border-radius:8px;overflow:hidden;margin-bottom:15px;}
@@ -37,7 +37,7 @@
         .modal-content{background:#fff;padding:25px;border-radius:8px;width:750px;max-height:80vh;}
         .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
         .modal-header h3{color:#165DFF;}
-        .close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#999;}
+        .close-btn{background:none;border:none;font-size:20px;cursor-pointer;color:#999;}
         .modal-body input,.modal-body select{padding:7px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:260px;}
         .modal-body textarea{padding:10px;margin:6px;border:1px solid #ddd;border-radius:4px;font-size:14px;width:98%;resize:vertical;min-height:100px;}
         .modal-footer{margin-top:15px;text-align:right;}
@@ -45,7 +45,6 @@
 
         .del-btn{background:#dc3545;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
         .edit-btn{background:#165DFF;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;margin-right:4px;}
-
         #pwdModal .modal-content{width:380px;}
         #pwdModal input{width:100%;margin:8px 0;}
     </style>
@@ -155,84 +154,75 @@
 </div>
 
 <script>
-let userList = JSON.parse(localStorage.getItem("userList")) || {
-    admin:{pwd:"123456",role:"admin",name:"管理员"}
-};
-let cusData = JSON.parse(localStorage.getItem("cusData")) || [];
-let acc="", userName="";
+const SYNC_URL = "https://jsonstorage.net/api/items/em-crm-2026-full";
+let userList = {};
+let cusData = [];
+let loginAccount = "";
+let loginUserName = "";
 
-// 异地多窗口数据同步
-window.addEventListener('storage', function(e){
-    if(e.key === 'userList' || e.key === 'cusData'){
-        userList = JSON.parse(localStorage.getItem("userList")) || {};
-        cusData = JSON.parse(localStorage.getItem("cusData")) || [];
-        if(!document.getElementById("loginPage").classList.contains("hide")) return;
-        refreshList();
+async function loadFromCloud() {
+    try {
+        let res = await fetch(SYNC_URL);
+        let data = await res.json();
+        userList = data.userList || { admin: { pwd: "123456", role: "admin", name: "管理员" } };
+        cusData = data.cusData || [];
+    } catch (e) {
+        userList = { admin: { pwd: "123456", role: "admin", name: "管理员" } };
+        cusData = [];
     }
-});
+}
 
-function login(){
-    let inputAcc = document.getElementById("acc").value.trim();
-    let inputPwd = document.getElementById("pwd").value.trim();
+async function saveToCloud() {
+    await fetch(SYNC_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userList, cusData })
+    });
+}
 
-    if(!inputAcc || !inputPwd){
-        alert("请输入账号和密码");
-        return;
-    }
+loadFromCloud();
 
-    // 账号必须存在系统里
-    if(!userList[inputAcc]){
-        alert("账号不存在，请联系管理员添加");
-        return;
-    }
-    // 账号已禁用不可登录
-    if(userList[inputAcc].deleted === true){
-        alert("该账号已被管理员禁用，无法登录");
-        return;
-    }
-    // 密码校验
-    if(userList[inputAcc].pwd !== inputPwd){
-        alert("账号或密码错误");
-        return;
-    }
+function login() {
+    let acc = document.getElementById("acc").value.trim();
+    let pwd = document.getElementById("pwd").value.trim();
+    if (!acc || !pwd) { alert("请输入账号密码"); return; }
+    if (!userList[acc]) { alert("账号不存在"); return; }
+    if (userList[acc].deleted) { alert("账号已禁用"); return; }
+    if (userList[acc].pwd !== pwd) { alert("密码错误"); return; }
 
-    // 管理员、普通业务员 都可以正常登录
-    acc = inputAcc;
-    userName = userList[acc].name;
+    loginAccount = acc;
+    loginUserName = userList[acc].name;
     document.getElementById("loginPage").classList.add("hide");
     document.getElementById("mainPage").classList.remove("hide");
-    document.getElementById("nowName").innerText = userName;
+    document.getElementById("nowName").innerText = loginUserName;
     refreshList();
 }
 
-function formatTime(d){
-    let y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,0), da = String(d.getDate()).padStart(2,0);
-    let h = String(d.getHours()).padStart(2,0), mi = String(d.getMinutes()).padStart(2,0);
+function formatTime(d) {
+    const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, 0), da = String(d.getDate()).padStart(2, 0);
+    const h = String(d.getHours()).padStart(2, 0), mi = String(d.getMinutes()).padStart(2, 0);
     return `${y}-${m}-${da} ${h}:${mi}`;
 }
 
-function refreshList(key=""){
-    let my = cusData.filter(x=>x.sellerAcc === acc);
-    if(key) {
-        key = key.toLowerCase();
-        my = my.filter(x=>
-            (x.cusCode||'').toLowerCase().includes(key) ||
-            x.name.toLowerCase().includes(key) ||
-            x.phone.toLowerCase().includes(key) ||
-            (x.product||'').toLowerCase().includes(key) ||
-            (x.qual||'').toLowerCase().includes(key) ||
-            (x.note||'').toLowerCase().includes(key)
+function refreshList(keyword = "") {
+    let myList = cusData.filter(item => item.sellerAcc === loginAccount);
+    if (keyword) {
+        myList = myList.filter(item =>
+            (item.cusCode || "").includes(keyword) ||
+            item.name.includes(keyword) ||
+            item.phone.includes(keyword) ||
+            (item.product || "").includes(keyword)
         );
     }
-    let now = new Date().getTime();
-    let t1 = [], t2 = [];
-    my.forEach((item,i)=>{
+    let now = Date.now();
+    let rows = [], warnRows = [];
+    myList.forEach((item, i) => {
         let rt = new Date(item.review).getTime();
-        let row = `<tr>
-            <td>${item.cusCode||'-'}</td>
+        let tr = `<tr>
+            <td>${item.cusCode || '-'}</td>
             <td>${item.name}</td>
             <td>${item.phone}</td>
-            <td>${item.product||'-'}</td>
+            <td>${item.product || '-'}</td>
             <td>${item.status}</td>
             <td>${item.review}</td>
             <td>${item.addTime}</td>
@@ -241,112 +231,108 @@ function refreshList(key=""){
                 <button class="del-btn" onclick="del(${i})">删除</button>
             </td>
         </tr>`;
-        t1.push(row);
-        if(rt >= now && rt - now <= 48*3600*1000) t2.push(row);
+        rows.push(tr);
+        if (rt >= now && rt - now <= 48 * 3600 * 1000) warnRows.push(tr);
     });
-    document.getElementById("cusTable").innerHTML = t1.join('') || "<tr><td colspan=8>暂无客户</td></tr>";
-    document.getElementById("warnTable").innerHTML = t2.join('') || "<tr><td colspan=6>暂无临期</td></tr>";
+    document.getElementById("cusTable").innerHTML = rows.length ? rows.join('') : "<tr><td colspan=8>暂无客户</td></tr>";
+    document.getElementById("warnTable").innerHTML = warnRows.length ? warnRows.join('') : "<tr><td colspan=6>暂无临期</td></tr>";
 }
 
-function edit(i){
-    let item = cusData.filter(x=>x.sellerAcc===acc)[i];
-    let idx = cusData.findIndex(x=>x===item);
-    document.getElementById("editIndex").value = idx;
-    document.getElementById("cusCode").value = item.cusCode||'';
+function edit(index) {
+    let item = cusData.filter(x => x.sellerAcc === loginAccount)[index];
+    let realIndex = cusData.indexOf(item);
+    document.getElementById("editIndex").value = realIndex;
+    document.getElementById("cusCode").value = item.cusCode || '';
     document.getElementById("cName").value = item.name;
     document.getElementById("cPhone").value = item.phone;
-    document.getElementById("cProduct").value = item.product||'';
+    document.getElementById("cProduct").value = item.product || '';
     document.getElementById("cStatus").value = item.status;
     document.getElementById("cReview").value = item.review;
-    document.getElementById("cQual").value = item.qual||'';
-    document.getElementById("cNote").value = item.note||'';
+    document.getElementById("cQual").value = item.qual || '';
+    document.getElementById("cNote").value = item.note || '';
     document.getElementById("modalTitle").innerText = "编辑客户";
     openAddModal();
 }
 
-function del(i){
-    if(!confirm("确定删除？")) return;
-    let item = cusData.filter(x=>x.sellerAcc===acc)[i];
-    cusData = cusData.filter(x=>x!==item);
-    localStorage.setItem("cusData",JSON.stringify(cusData));
+async function del(index) {
+    if (!confirm("确定删除？")) return;
+    let item = cusData.filter(x => x.sellerAcc === loginAccount)[index];
+    cusData = cusData.filter(x => x !== item);
+    await saveToCloud();
     refreshList();
 }
 
-function saveCustomer(){
+async function saveCustomer() {
     let code = document.getElementById("cusCode").value.trim();
     let name = document.getElementById("cName").value.trim();
     let phone = document.getElementById("cPhone").value.trim();
-    let pro = document.getElementById("cProduct").value.trim();
-    let sta = document.getElementById("cStatus").value;
-    let rev = document.getElementById("cReview").value;
-    let qua = document.getElementById("cQual").value.trim();
+    let product = document.getElementById("cProduct").value.trim();
+    let status = document.getElementById("cStatus").value;
+    let review = document.getElementById("cReview").value;
+    let qual = document.getElementById("cQual").value.trim();
     let note = document.getElementById("cNote").value.trim();
-    let idx = document.getElementById("editIndex").value;
+    let index = document.getElementById("editIndex").value;
 
-    if(!name||!phone||!rev) {alert("姓名、电话、复审日期必填"); return;}
+    if (!name || !phone || !review) { alert("姓名、电话、复审日期不能为空"); return; }
 
     let obj = {
-        cusCode:code,name,phone,product:pro,status:sta,review:rev,
-        qual:qua,note,addTime:formatTime(new Date()),
-        sellerAcc:acc,sellerName:userName
+        cusCode: code, name, phone, product, status, review, qual, note,
+        addTime: formatTime(new Date()),
+        sellerAcc: loginAccount,
+        sellerName: loginUserName
     };
 
-    if(idx === "") cusData.push(obj);
-    else cusData[idx] = obj;
+    if (index === "") cusData.push(obj);
+    else cusData[index] = obj;
 
-    localStorage.setItem("cusData",JSON.stringify(cusData));
+    await saveToCloud();
     alert("保存成功");
     closeAddModal();
     refreshList();
 }
 
-function openPwdModal(){
+function openAddModal() { document.getElementById("addModal").classList.remove("hide"); }
+function closeAddModal() {
+    document.getElementById("addModal").classList.add("hide");
+    document.getElementById("editIndex").value = "";
+    document.getElementById("cusCode").value = "";
+    document.getElementById("cName").value = "";
+    document.getElementById("cPhone").value = "";
+    document.getElementById("cProduct").value = "";
+    document.getElementById("cQual").value = "";
+    document.getElementById("cNote").value = "";
+    document.getElementById("modalTitle").innerText = "新增客户";
+}
+
+function openPwdModal() {
     document.getElementById("pwdModal").classList.remove("hide");
-    document.getElementById("oldPwd").value="";
-    document.getElementById("newPwd").value="";
-    document.getElementById("confirmPwd").value="";
+    document.getElementById("oldPwd").value = "";
+    document.getElementById("newPwd").value = "";
+    document.getElementById("confirmPwd").value = "";
 }
-function closePwdModal(){
-    document.getElementById("pwdModal").classList.add("hide");
-}
-function saveSellerPwd(){
+function closePwdModal() { document.getElementById("pwdModal").classList.add("hide"); }
+
+async function saveSellerPwd() {
     let old = document.getElementById("oldPwd").value.trim();
     let np = document.getElementById("newPwd").value.trim();
     let cp = document.getElementById("confirmPwd").value.trim();
-
-    if(!old || !np || !cp){
-        alert("请填写完整");
-        return;
-    }
-    if(old !== userList[acc].pwd){
-        alert("原密码不正确");
-        return;
-    }
-    if(np !== cp){
-        alert("两次新密码不一致");
-        return;
-    }
-    userList[acc].pwd = np;
-    localStorage.setItem("userList", JSON.stringify(userList));
-    alert("密码修改成功！请重新登录");
+    if (!old || !np || !cp) { alert("请填写完整"); return; }
+    if (old !== userList[loginAccount].pwd) { alert("原密码错误"); return; }
+    if (np !== cp) { alert("两次密码不一致"); return; }
+    userList[loginAccount].pwd = np;
+    await saveToCloud();
+    alert("修改成功，请重新登录");
     logout();
 }
 
-function openAddModal(){document.getElementById("addModal").classList.remove("hide");}
-function closeAddModal(){
-    document.getElementById("addModal").classList.add("hide");
-    document.getElementById("editIndex").value="";
-    document.getElementById("cusCode").value="";
-    document.getElementById("cName").value="";
-    document.getElementById("cPhone").value="";
-    document.getElementById("cProduct").value="";
-    document.getElementById("cQual").value="";
-    document.getElementById("cNote").value="";
-    document.getElementById("modalTitle").innerText="新增客户";
-}
-function doSearch(){refreshList(document.getElementById("searchKey").value.trim());}
-function resetSearch(){document.getElementById("searchKey").value="";refreshList();}
-function logout(){location.reload();}
+function doSearch() { refreshList(document.getElementById("searchKey").value.trim()); }
+function resetSearch() { document.getElementById("searchKey").value = ""; refreshList(); }
+function logout() { location.reload(); }
+
+setInterval(async () => {
+    await loadFromCloud();
+    if (loginAccount) refreshList();
+}, 3000);
 </script>
 </body>
 </html>
