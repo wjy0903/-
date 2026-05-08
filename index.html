@@ -22,7 +22,7 @@
         .search-bar{padding:18px 30px;background:#fff;border-bottom:1px solid #eee;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
         #searchKey{width:320px;height:36px;padding:0 12px;border:1px solid #ddd;border-radius:4px;font-size:14px;}
         .btn-blue{background:#165DFF;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
-        .btn-gray{background:#999;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
+        .btn-gray{background:#999;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;}
         .btn-add{background:#28a745;color:#fff;border:none;padding:0 15px;height:36px;border-radius:4px;cursor:pointer;}
 
         .table-container{width:94%;margin:0 3%;border:1px solid #eee;border-radius:8px;overflow:hidden;margin-bottom:15px;}
@@ -46,7 +46,6 @@
         .del-btn{background:#dc3545;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;}
         .edit-btn{background:#165DFF;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;margin-right:4px;}
 
-        /* 改密码弹窗 */
         #pwdModal .modal-content{width:380px;}
         #pwdModal input{width:100%;margin:8px 0;}
     </style>
@@ -56,7 +55,7 @@
 <div id="loginPage">
     <div class="login-card">
         <div class="title">客户管理系统</div>
-        <input class="inp" type="text" id="acc" placeholder="请输入账号" value="admin">
+        <input class="inp" type="text" id="acc" placeholder="请输入账号">
         <input class="inp" type="password" id="pwd" placeholder="请输入密码">
         <button class="login-btn" onclick="login()">登录系统</button>
     </div>
@@ -66,7 +65,7 @@
     <div class="head">
         <div class="sys-name">客户管理系统</div>
         <div class="user-box">
-            当前业务员：<span id="nowName"></span>
+            当前登录：<span id="nowName"></span>
             <button class="edit-name" onclick="openPwdModal()">修改密码</button>
             <button class="edit-name" onclick="logout()">退出</button>
         </div>
@@ -115,7 +114,6 @@
     </div>
 </div>
 
-<!-- 新增/编辑客户弹窗 -->
 <div id="addModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
@@ -139,7 +137,6 @@
     </div>
 </div>
 
-<!-- 业务员修改密码弹窗 -->
 <div id="pwdModal" class="modal hide">
     <div class="modal-content">
         <div class="modal-header">
@@ -164,7 +161,7 @@ let userList = JSON.parse(localStorage.getItem("userList")) || {
 let cusData = JSON.parse(localStorage.getItem("cusData")) || [];
 let acc="", userName="";
 
-// 异地多窗口数据同步监听
+// 异地多窗口数据同步
 window.addEventListener('storage', function(e){
     if(e.key === 'userList' || e.key === 'cusData'){
         userList = JSON.parse(localStorage.getItem("userList")) || {};
@@ -177,22 +174,29 @@ window.addEventListener('storage', function(e){
 function login(){
     let inputAcc = document.getElementById("acc").value.trim();
     let inputPwd = document.getElementById("pwd").value.trim();
-    if(!inputAcc || !inputPwd) {alert("请输入账号密码"); return;}
 
-    if(inputAcc === "admin" && userList.admin.pwd === inputPwd){
-        location.href = "admin.html";
+    if(!inputAcc || !inputPwd){
+        alert("请输入账号和密码");
         return;
     }
 
-    if(userList[inputAcc]?.deleted){
-        alert("该账号已被删除，无法登录");
+    // 账号必须存在系统里
+    if(!userList[inputAcc]){
+        alert("账号不存在，请联系管理员添加");
+        return;
+    }
+    // 账号已禁用不可登录
+    if(userList[inputAcc].deleted === true){
+        alert("该账号已被管理员禁用，无法登录");
+        return;
+    }
+    // 密码校验
+    if(userList[inputAcc].pwd !== inputPwd){
+        alert("账号或密码错误");
         return;
     }
 
-    if(!userList[inputAcc] || userList[inputAcc].pwd !== inputPwd){
-        alert("账号或密码错误"); return;
-    }
-
+    // 管理员、普通业务员 都可以正常登录
     acc = inputAcc;
     userName = userList[acc].name;
     document.getElementById("loginPage").classList.add("hide");
